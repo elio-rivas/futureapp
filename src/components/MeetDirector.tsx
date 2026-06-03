@@ -10,7 +10,7 @@ export default function MeetDirector() {
           <div className="relative flex items-center justify-center">
             <div className="w-72 h-96 sm:w-80 sm:h-[440px] lg:w-96 lg:h-[500px] rounded-[50%] overflow-hidden shadow-xl border-4 border-white ring-1 ring-brand-100">
               <img
-                src="/public/DirectorPicture.png"
+                src="/DirectorPicture.png"
                 alt="Academic Director"
                 className="w-full h-full object-cover object-top"
               />
