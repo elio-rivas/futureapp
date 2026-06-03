@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { submitLead } from '../lib/supabase';
+import { siteImages } from '../lib/images';
 
 export default function ContactPage() {
   const { t } = useLanguage();
@@ -30,8 +31,8 @@ export default function ContactPage() {
       <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop"
-            alt="Supportive educational environment"
+            src={siteImages.contactHero}
+            alt="Welcoming, comfortable space for young readers"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-brand-950/80" />

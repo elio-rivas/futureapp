@@ -1,6 +1,7 @@
 import { Heart, Lightbulb, Target, UserCheck, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
+import { siteImages } from '../lib/images';
 
 const valueIcons = [Heart, Lightbulb, Target];
 
@@ -33,8 +34,8 @@ export default function AboutPage() {
             </div>
             <div className="relative">
               <img
-                src="https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=700&h=500&fit=crop"
-                alt="Children reading together in a classroom"
+                src={siteImages.aboutFeature}
+                alt="Children happily reading together in a warm classroom"
                 className="rounded-2xl shadow-lg w-full h-80 lg:h-[420px] object-cover"
               />
             </div>

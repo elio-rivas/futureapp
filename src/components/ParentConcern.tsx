@@ -1,5 +1,6 @@
 import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { siteImages } from '../lib/images';
 
 export default function ParentConcern() {
   const { t } = useLanguage();
@@ -37,8 +38,8 @@ export default function ParentConcern() {
 
           <div className="relative">
             <img
-              src="https://images.pexels.com/photos/4778611/pexels-photo-4778611.jpeg?auto=compress&cs=tinysrgb&w=700&h=500&fit=crop"
-              alt="Child frustrated while trying to read"
+              src={siteImages.parentConcern}
+              alt="Child quietly focused while reading"
               className="rounded-2xl shadow-lg w-full h-80 lg:h-96 object-cover"
             />
             <div className="absolute -bottom-4 -left-4 bg-white rounded-xl p-5 shadow-lg border border-warm-100 max-w-xs hidden md:block">

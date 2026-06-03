@@ -1,6 +1,7 @@
 import { Search, Layers, TrendingUp, Target, Home, MessageCircle, Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../i18n/LanguageContext';
+import { siteImages } from '../lib/images';
 
 const stepIcons = [Search, Layers, TrendingUp, Target, Home, MessageCircle, Heart];
 
@@ -27,8 +28,8 @@ export default function ServicesPage() {
         <div className="container-max">
           <div className="max-w-3xl mx-auto mb-16">
             <img
-              src="https://images.pexels.com/photos/8612927/pexels-photo-8612927.jpeg?auto=compress&cs=tinysrgb&w=900&h=400&fit=crop"
-              alt="Child engaged in reading with personalized support"
+              src={siteImages.servicesBanner}
+              alt="Child engaged and smiling while reading with support"
               className="w-full h-64 sm:h-80 object-cover rounded-2xl shadow-lg"
             />
           </div>

@@ -1,6 +1,7 @@
 import { BookOpen, UserCheck, Clock, Calendar, CheckCircle, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { QuestionnaireForm } from './ParentQuestionnaire';
+import { siteImages } from '../lib/images';
 
 export default function SummerProgram() {
   const { t } = useLanguage();
@@ -24,8 +25,8 @@ export default function SummerProgram() {
           <div>
             <div className="relative rounded-2xl overflow-hidden shadow-lg">
               <img
-                src="https://images.pexels.com/photos/8535230/pexels-photo-8535230.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
-                alt="Child reading a book with focused attention"
+                src={siteImages.summerSection}
+                alt="Young reader enjoying a book in a bright, comfortable space"
                 className="w-full h-80 sm:h-96 object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-900/50 to-transparent" />

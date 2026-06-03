@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import QuestionnaireModal from '../components/QuestionnaireModal';
 import { QuestionnaireForm } from '../components/ParentQuestionnaire';
+import { siteImages } from '../lib/images';
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
@@ -35,8 +36,8 @@ export default function SummerProgramPage() {
       <section className="relative pt-32 pb-24 overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=1920&h=800&fit=crop"
-            alt="One-on-one tutoring session"
+            src={siteImages.summerPageHero}
+            alt="Child reading confidently during a one-on-one session"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-brand-950/85 via-brand-900/75 to-brand-950/90" />

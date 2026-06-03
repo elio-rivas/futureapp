@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, BookOpen, UserCheck, Calendar, Heart } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { siteImages } from '../lib/images';
 
 function AnimatedCounter({ target, duration = 2000, suffix = '' }: { target: number; duration?: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -44,8 +45,8 @@ export default function HeroIntro() {
     <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: bgY }}>
         <img
-          src="https://images.pexels.com/photos/8535230/pexels-photo-8535230.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop"
-          alt="Teacher reading one-on-one with a child"
+          src={siteImages.homeHero}
+          alt="Happy child smiling while reading a book with a caring tutor"
           className="w-full h-full object-cover scale-110"
         />
       </motion.div>
