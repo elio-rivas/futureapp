@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   publicDir: 'public_assets',
   build: {
-    outDir: '.', // Keeps files in the root directory for Hostinger
+    outDir: 'dist', // 👈 Revert this back to 'dist' so Hostinger finds the folder
   },
   optimizeDeps: {
     exclude: ['lucide-react'],
