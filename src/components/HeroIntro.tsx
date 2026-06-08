@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, BookOpen, UserCheck, Calendar, Heart } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
-import { siteImages } from '../lib/images';
+import HeroVideo from './HeroVideo';
+import { siteMedia } from '../lib/media';
 
 function AnimatedCounter({ target, duration = 2000, suffix = '' }: { target: number; duration?: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -44,10 +45,10 @@ export default function HeroIntro() {
   return (
     <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: bgY }}>
-        <img
-          src={siteImages.homeHero}
-          alt="Happy child smiling while reading a book with a caring tutor"
-          className="w-full h-full object-cover scale-110"
+        <HeroVideo
+          poster={siteMedia.hero.poster}
+          posterAlt={siteMedia.hero.posterAlt}
+          sources={siteMedia.hero.sources}
         />
       </motion.div>
 

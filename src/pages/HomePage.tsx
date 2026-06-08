@@ -6,6 +6,7 @@ import ParentConcern from '../components/ParentConcern';
 import WhyOneOnOne from '../components/WhyOneOnOne';
 import ProgramStructure from '../components/ProgramStructure';
 import StudentGrowth from '../components/StudentGrowth';
+import StoryVideo from '../components/StoryVideo';
 import WhyFamiliesChoose from '../components/WhyFamiliesChoose';
 import MeetDirector from '../components/MeetDirector';
 import ParentTestimonials from '../components/ParentTestimonials';
@@ -24,6 +25,7 @@ export default function HomePage() {
       <WhyOneOnOne />
       <ProgramStructure />
       <StudentGrowth />
+      <StoryVideo />
       <WhyFamiliesChoose />
       <MeetDirector />
       <ParentTestimonials />
