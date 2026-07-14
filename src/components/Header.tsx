@@ -20,23 +20,14 @@ const navLinks = [
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [programsOpen, setProgramsOpen] = useState(false);
   const [assessmentsOpen, setAssessmentsOpen] = useState(false);
   const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false);
   const [mobileAssessmentsOpen, setMobileAssessmentsOpen] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === '/';
   const { locale, toggleLocale, t } = useLanguage();
   const programsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const assessmentsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -47,13 +38,10 @@ export default function Header() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
-
-  const showTransparent = isHome && !scrolled;
 
   const openPrograms = () => {
     if (programsTimer.current) clearTimeout(programsTimer.current);
@@ -71,18 +59,13 @@ export default function Header() {
     assessmentsTimer.current = setTimeout(() => setAssessmentsOpen(false), 150);
   };
 
-  // Shared nav item styles
   const navItemBase = `
     inline-flex items-center gap-1 px-2.5 py-2 rounded-md
     text-[11px] font-semibold uppercase tracking-normal
     whitespace-nowrap transition-all duration-150
   `;
-  const navItemActive = showTransparent
-      ? 'text-white bg-white/15'
-      : 'text-brand-800 bg-brand-50';
-  const navItemIdle = showTransparent
-      ? 'text-white/90 hover:text-white hover:bg-white/10'
-      : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100';
+  const navItemActive = 'text-brand-800 bg-brand-50';
+  const navItemIdle = 'text-brand-700 hover:text-brand-900 hover:bg-warm-100';
 
   return (
       <header className="fixed top-0 left-0 right-0 z-50">
@@ -92,7 +75,7 @@ export default function Header() {
           <div className="max-w-screen-xl mx-auto px-6 2xl:px-8 flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-2 text-brand-100">
               <MapPin className="w-3 h-3 flex-shrink-0" />
-              <span>Orlando, FL · Serving Central Florida</span>
+              <span>Kissimmee, FL · Serving Central Florida</span>
             </div>
             <button
                 onClick={toggleLocale}
@@ -105,18 +88,8 @@ export default function Header() {
           </div>
         </div>
 
-        {/* ── Main nav bar ───────────────────────────────────────────── */}
-        <div
-            className={`transition-all duration-300 ${
-                showTransparent
-                    ? 'bg-transparent'
-                    : 'bg-white/97 backdrop-blur-md shadow-sm border-b border-warm-100'
-            }`}
-        >
-          {/*
-          Three-zone layout:
-            [logo — flex-none]  [nav — flex-1 centered]  [cta — flex-none]
-        */}
+        {/* ── Main nav bar — always solid white ─────────────────────── */}
+        <div className="bg-white shadow-sm border-b border-warm-100">
           <div className="max-w-screen-xl mx-auto px-6 2xl:px-8 flex items-center h-[68px] gap-6">
 
             {/* ── Zone 1: Logo ─────────────────────────────────────── */}
@@ -134,29 +107,20 @@ export default function Header() {
                 />
               </div>
               <div className="leading-none">
-              <span
-                  className={`font-display font-bold text-[15px] leading-tight block transition-colors ${
-                      showTransparent ? 'text-white' : 'text-brand-900'
-                  }`}
-              >
+              <span className="font-display font-bold text-[15px] leading-tight block text-brand-900">
                 Future Foundations
               </span>
-                <span
-                    className={`text-[10px] font-semibold tracking-widest transition-colors ${
-                        showTransparent ? 'text-brand-200' : 'text-brand-500'
-                    }`}
-                >
+                <span className="text-[10px] font-semibold tracking-widest text-brand-500">
                 EDUCATION
               </span>
               </div>
             </Link>
 
-            {/* ── Zone 2: Desktop nav (hidden below xl) ────────────── */}
+            {/* ── Zone 2: Desktop nav ──────────────────────────────── */}
             <nav
                 aria-label="Main navigation"
                 className="hidden xl:flex items-center justify-center flex-1 gap-0.5"
             >
-              {/* Home */}
               <Link
                   to="/"
                   className={`${navItemBase} ${location.pathname === '/' ? navItemActive : navItemIdle}`}
@@ -262,7 +226,7 @@ export default function Header() {
                 {t.nav.payment}
               </Link>
 
-              {/* Remaining links (about, contact) */}
+              {/* About & Contact */}
               {navLinks
                   .filter(
                       (l) =>
@@ -288,7 +252,6 @@ export default function Header() {
 
             {/* ── Zone 3: CTA + mobile controls ────────────────────── */}
             <div className="flex items-center gap-3 flex-none ml-auto xl:ml-0">
-              {/* Desktop CTA */}
               <button
                   onClick={() => openLeadModal()}
                   className="hidden xl:inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-normal transition-all hover:shadow-md"
@@ -299,11 +262,7 @@ export default function Header() {
               {/* Mobile: language toggle */}
               <button
                   onClick={toggleLocale}
-                  className={`xl:hidden inline-flex items-center gap-1.5 h-10 px-3 rounded-lg text-sm font-semibold transition-all ${
-                      showTransparent
-                          ? 'text-white/90 hover:text-white hover:bg-white/10 border border-white/25'
-                          : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100 border border-warm-200'
-                  }`}
+                  className="xl:hidden inline-flex items-center gap-1.5 h-10 px-3 rounded-lg text-sm font-semibold transition-all text-brand-700 hover:text-brand-900 hover:bg-warm-100 border border-warm-200"
                   aria-label="Toggle language"
               >
                 <Globe className="w-4 h-4" />
@@ -316,11 +275,7 @@ export default function Header() {
                   aria-label={isOpen ? 'Close menu' : 'Open menu'}
                   aria-expanded={isOpen}
                   aria-controls="mobile-menu"
-                  className={`xl:hidden h-10 w-10 flex items-center justify-center rounded-lg transition-colors ${
-                      showTransparent
-                          ? 'text-white hover:bg-white/10'
-                          : 'text-brand-800 hover:bg-warm-100'
-                  }`}
+                  className="xl:hidden h-10 w-10 flex items-center justify-center rounded-lg transition-colors text-brand-800 hover:bg-warm-100"
               >
                 {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -334,12 +289,10 @@ export default function Header() {
             <div
                 id="mobile-menu"
                 className="xl:hidden fixed inset-0 top-[68px] bg-white z-40 flex flex-col"
-                style={{ top: scrolled || !isHome ? '68px' : '68px' }}
             >
-              {/* Location bar on mobile */}
               <div className="bg-brand-900 text-brand-100 flex items-center gap-2 px-5 py-2.5 text-xs">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
-                <span>Orlando, FL · Serving Central Florida</span>
+                <span>Kissimmee, FL · Serving Central Florida</span>
               </div>
 
               <nav
@@ -349,18 +302,17 @@ export default function Header() {
                 <Link
                     to="/"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
                 >
                   {t.nav.home}
                 </Link>
 
-                {/* Programs expandable */}
                 <div>
                   <button
                       onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
                       aria-expanded={mobileProgramsOpen}
                       aria-controls="mobile-programs"
-                      className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                      className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
                   >
                     {t.nav.programs}
                     <ChevronDown
@@ -379,7 +331,7 @@ export default function Header() {
                                 key={item.label}
                                 to={item.href}
                                 onClick={() => setIsOpen(false)}
-                                className="flex items-center h-10 px-4 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                                className="flex items-center h-10 px-4 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors"
                             >
                               {item.label}
                             </Link>
@@ -391,18 +343,17 @@ export default function Header() {
                 <Link
                     to="/services"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
                 >
                   {t.nav.services}
                 </Link>
 
-                {/* Assessments expandable */}
                 <div>
                   <button
                       onClick={() => setMobileAssessmentsOpen(!mobileAssessmentsOpen)}
                       aria-expanded={mobileAssessmentsOpen}
                       aria-controls="mobile-assessments"
-                      className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                      className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
                   >
                     {t.nav.assessments}
                     <ChevronDown
@@ -421,7 +372,7 @@ export default function Header() {
                                 key={item.label}
                                 to={item.href}
                                 onClick={() => setIsOpen(false)}
-                                className="flex items-center h-10 px-4 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                                className="flex items-center h-10 px-4 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors"
                             >
                               {item.label}
                             </Link>
@@ -433,7 +384,7 @@ export default function Header() {
                 <Link
                     to="/payment-methods"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
                 >
                   {t.nav.payment}
                 </Link>
@@ -453,7 +404,7 @@ export default function Header() {
                               key={link.href}
                               to={link.href}
                               onClick={() => setIsOpen(false)}
-                              className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                              className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
                           >
                             {label}
                           </Link>
@@ -466,7 +417,7 @@ export default function Header() {
                         openLeadModal();
                         setIsOpen(false);
                       }}
-                      className="w-full flex items-center justify-center h-12 bg-accent-500 hover:bg-accent-600 text-white rounded-lg font-bold text-sm uppercase tracking-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
+                      className="w-full flex items-center justify-center h-12 bg-accent-500 hover:bg-accent-600 text-white rounded-lg font-bold text-sm uppercase tracking-normal transition-all"
                   >
                     {t.nav.scheduleConsultation}
                   </button>

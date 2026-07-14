@@ -1,6 +1,6 @@
 import HeroIntro from '../components/HeroIntro';
+import ServicesCarousel from '../components/ServicesCarousel';
 import ParentQuestionnaire from '../components/ParentQuestionnaire';
-import QuestionnaireModal from '../components/QuestionnaireModal';
 import SummerProgram from '../components/SummerProgram';
 import ParentConcern from '../components/ParentConcern';
 import WhyOneOnOne from '../components/WhyOneOnOne';
@@ -14,24 +14,27 @@ import ParentExpectations from '../components/ParentExpectations';
 import RightFit from '../components/RightFit';
 import CTA from '../components/CTA';
 
+// Toggle to true when the Summer Intensive campaign is active
+const SHOW_HERO_INTRO = false;
+
 export default function HomePage() {
-  return (
-    <>
-      <QuestionnaireModal />
-      <HeroIntro />
-      <ParentQuestionnaire />
-      <SummerProgram />
-      <ParentConcern />
-      <WhyOneOnOne />
-      <ProgramStructure />
-      <StudentGrowth />
-      <StoryVideo />
-      <WhyFamiliesChoose />
-      <MeetDirector />
-      <ParentTestimonials />
-      <ParentExpectations />
-      <RightFit />
-      <CTA />
-    </>
-  );
+    return (
+        <>
+            {SHOW_HERO_INTRO && <HeroIntro />}
+            <ServicesCarousel />
+            <ParentQuestionnaire />
+            <SummerProgram />
+            <ParentConcern />
+            <WhyOneOnOne />
+            <ProgramStructure />
+            <StudentGrowth />
+            <StoryVideo />
+            <WhyFamiliesChoose />
+            <MeetDirector />
+            <ParentTestimonials />
+            <ParentExpectations />
+            <RightFit />
+            <CTA />
+        </>
+    );
 }

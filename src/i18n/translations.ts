@@ -481,6 +481,44 @@ export const translations = {
       phone: 'Phone',
       emailLabel: 'Email',
     },
+    servicesCarousel: {
+      sectionLabel: 'What We Offer',
+      titleLine1: 'Programs Designed',
+      titleLine2: 'For Your Child',
+      viewProgram: 'View Program',
+      items: [
+        {
+          title: 'Early Learners',
+          subtitle: 'Pre-K foundation building through play-based literacy and numeracy.',
+          tag: 'Pre-K',
+        },
+        {
+          title: 'Elementary School',
+          subtitle: 'Reading fluency, comprehension, and math skills tailored per student.',
+          tag: 'Grades K–5',
+        },
+        {
+          title: 'Middle School',
+          subtitle: 'Critical thinking, writing, and advanced math for grades 6–8.',
+          tag: 'Grades 6–8',
+        },
+        {
+          title: 'High School',
+          subtitle: 'SAT prep, AP support, and college-readiness coaching for grades 9–12.',
+          tag: 'Grades 9–12',
+        },
+        {
+          title: 'Unique Learning Needs',
+          subtitle: 'Specialized 1-on-1 instruction for dyslexia, ADHD, and learning differences.',
+          tag: 'Specialized Support',
+        },
+        {
+          title: 'Homeschool Students',
+          subtitle: 'Structured curriculum plans and evaluations for Florida homeschool families.',
+          tag: 'Homeschool',
+        },
+      ],
+    },
     paymentPage: {
       badge: 'Payments',
       title: 'Payment Options',
@@ -987,6 +1025,44 @@ export const translations = {
       hoursValue: 'Lun-Vie: 9:00 am - 7:00 pm',
       phone: 'Telefono',
       emailLabel: 'Correo Electronico',
+    },
+    servicesCarousel: {
+      sectionLabel: 'Lo Que Ofrecemos',
+      titleLine1: 'Programas Diseñados',
+      titleLine2: 'Para Tu Hijo',
+      viewProgram: 'Ver Programa',
+      items: [
+        {
+          title: 'Primeros Aprendices',
+          subtitle: 'Fundamentos de Pre-K a través de lectoescritura y numeracia basadas en el juego.',
+          tag: 'Pre-K',
+        },
+        {
+          title: 'Escuela Primaria',
+          subtitle: 'Fluidez lectora, comprensión y matemáticas adaptadas a cada alumno.',
+          tag: 'Grados K–5',
+        },
+        {
+          title: 'Escuela Intermedia',
+          subtitle: 'Pensamiento crítico, escritura y matemáticas avanzadas para 6–8.',
+          tag: 'Grados 6–8',
+        },
+        {
+          title: 'Escuela Secundaria',
+          subtitle: 'Preparación SAT, apoyo AP y orientación para la universidad, grados 9–12.',
+          tag: 'Grados 9–12',
+        },
+        {
+          title: 'Necesidades Únicas',
+          subtitle: 'Instrucción especializada 1-a-1 para dislexia, TDAH y diferencias de aprendizaje.',
+          tag: 'Apoyo Especializado',
+        },
+        {
+          title: 'Educación en Casa',
+          subtitle: 'Planes curriculares estructurados y evaluaciones para familias de Florida.',
+          tag: 'Educación en Casa',
+        },
+      ],
     },
     paymentPage: {
       badge: 'Pagos',
