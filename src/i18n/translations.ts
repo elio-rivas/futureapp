@@ -4,11 +4,20 @@ export const translations = {
   en: {
     nav: {
       home: 'Home',
+      programs: 'Programs',
       summerProgram: 'Summer Intensive',
       services: 'Services',
       about: 'About',
       contact: 'Contact',
       payment: 'Payment',
+      programItems: [
+        { label: 'Early Learners (Pre-K)', href: '/services' },
+        { label: 'Elementary School', href: '/services' },
+        { label: 'Middle School', href: '/services' },
+        { label: 'High School', href: '/services' },
+        { label: 'Students with Unique Learning Needs', href: '/services' },
+        { label: 'Homeschool Students', href: '/services' },
+      ],
     },
     heroIntro: {
       badge: 'Summer 2026 - Limited Spots Available',
@@ -494,11 +503,20 @@ export const translations = {
   es: {
     nav: {
       home: 'Inicio',
+      programs: 'Programas',
       summerProgram: 'Intensivo de Verano',
       services: 'Servicios',
       about: 'Nosotros',
       contact: 'Contacto',
       payment: 'Pagos',
+      programItems: [
+        { label: 'Aprendices Tempranos (Pre-K)', href: '/services' },
+        { label: 'Escuela Primaria', href: '/services' },
+        { label: 'Escuela Intermedia', href: '/services' },
+        { label: 'Escuela Secundaria', href: '/services' },
+        { label: 'Estudiantes con Necesidades Únicas', href: '/services' },
+        { label: 'Estudiantes de Educación en Casa', href: '/services' },
+      ],
     },
     heroIntro: {
       badge: 'Verano 2026 - Cupos Limitados',
