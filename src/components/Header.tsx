@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Globe, ChevronDown, MapPin } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { openLeadModal } from '../lib/leadModalStore';
 
 const LOGO_URL =
     'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/dWxv3J07bnh78Qgv/screenshot-2025-02-01-161224-AVL7Zbq4VKsNQVn6.png';
@@ -289,7 +290,7 @@ export default function Header() {
             <div className="flex items-center gap-3 flex-none ml-auto xl:ml-0">
               {/* Desktop CTA */}
               <button
-                  onClick={() => window.dispatchEvent(new Event('openLeadModal'))}
+                  onClick={() => openLeadModal()}
                   className="hidden xl:inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-normal transition-all hover:shadow-md"
               >
                 {t.nav.scheduleConsultation}
@@ -462,7 +463,7 @@ export default function Header() {
                 <div className="mt-4 pt-4 border-t border-warm-100">
                   <button
                       onClick={() => {
-                        window.dispatchEvent(new Event('openLeadModal'));
+                        openLeadModal();
                         setIsOpen(false);
                       }}
                       className="w-full flex items-center justify-center h-12 bg-accent-500 hover:bg-accent-600 text-white rounded-lg font-bold text-sm uppercase tracking-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
