@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Globe, ChevronDown, MapPin } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const LOGO_URL = 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/dWxv3J07bnh78Qgv/screenshot-2025-02-01-161224-AVL7Zbq4VKsNQVn6.png';
+const LOGO_URL =
+    'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/dWxv3J07bnh78Qgv/screenshot-2025-02-01-161224-AVL7Zbq4VKsNQVn6.png';
 
 const SHOW_SUMMER_PROGRAM = false;
 
@@ -45,6 +46,12 @@ export default function Header() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
   const showTransparent = isHome && !scrolled;
 
   const openPrograms = () => {
@@ -63,69 +70,95 @@ export default function Header() {
     assessmentsTimer.current = setTimeout(() => setAssessmentsOpen(false), 150);
   };
 
+  // Shared nav item styles
+  const navItemBase = `
+    inline-flex items-center gap-1 px-2.5 py-2 rounded-md
+    text-[11px] font-semibold uppercase tracking-normal
+    whitespace-nowrap transition-all duration-150
+  `;
+  const navItemActive = showTransparent
+      ? 'text-white bg-white/15'
+      : 'text-brand-800 bg-brand-50';
+  const navItemIdle = showTransparent
+      ? 'text-white/90 hover:text-white hover:bg-white/10'
+      : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100';
+
   return (
       <header className="fixed top-0 left-0 right-0 z-50">
-        {/* Top info bar */}
-        <div className="hidden lg:block bg-brand-900 text-white">
-          <div className="container-max flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2 text-xs">
+
+        {/* ── Top info bar ───────────────────────────────────────────── */}
+        <div className="hidden xl:block bg-brand-900 text-white">
+          <div className="max-w-screen-xl mx-auto px-6 2xl:px-8 flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-2 text-brand-100">
-              <MapPin className="w-3.5 h-3.5" />
+              <MapPin className="w-3 h-3 flex-shrink-0" />
               <span>Orlando, FL · Serving Central Florida</span>
             </div>
-            <div className="flex items-center gap-5">
-              <button
-                  onClick={toggleLocale}
-                  className="flex items-center gap-1.5 text-brand-100 hover:text-white transition-colors font-semibold"
-                  aria-label="Toggle language"
-              >
-                <Globe className="w-3.5 h-3.5" />
-                {locale === 'en' ? 'Español' : 'English'}
-              </button>
-            </div>
+            <button
+                onClick={toggleLocale}
+                className="flex items-center gap-1.5 text-brand-100 hover:text-white transition-colors font-semibold py-1 px-2 rounded"
+                aria-label="Toggle language"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              {locale === 'en' ? 'Español' : 'English'}
+            </button>
           </div>
         </div>
 
-        {/* Main nav bar */}
+        {/* ── Main nav bar ───────────────────────────────────────────── */}
         <div
             className={`transition-all duration-300 ${
                 showTransparent
                     ? 'bg-transparent'
-                    : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-warm-100'
+                    : 'bg-white/97 backdrop-blur-md shadow-sm border-b border-warm-100'
             }`}
         >
-          <div className="container-max flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform">
+          {/*
+          Three-zone layout:
+            [logo — flex-none]  [nav — flex-1 centered]  [cta — flex-none]
+        */}
+          <div className="max-w-screen-xl mx-auto px-6 2xl:px-8 flex items-center h-[68px] gap-6">
+
+            {/* ── Zone 1: Logo ─────────────────────────────────────── */}
+            <Link
+                to="/"
+                aria-label="Future Foundations Education — Home"
+                className="flex items-center gap-3 flex-none group"
+            >
+              <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 group-hover:scale-105 transition-transform">
                 <img
                     src={LOGO_URL}
-                    alt="Future Foundations Education"
+                    alt=""
+                    aria-hidden="true"
                     className="w-full h-full object-cover scale-[1.15]"
                 />
               </div>
-              <div>
-              <span className={`font-display font-bold text-lg leading-tight block transition-colors ${showTransparent ? 'text-white' : 'text-brand-900'}`}>
+              <div className="leading-none">
+              <span
+                  className={`font-display font-bold text-[15px] leading-tight block transition-colors ${
+                      showTransparent ? 'text-white' : 'text-brand-900'
+                  }`}
+              >
                 Future Foundations
               </span>
-                <span className={`text-xs font-medium tracking-wide transition-colors ${showTransparent ? 'text-brand-200' : 'text-brand-600'}`}>
+                <span
+                    className={`text-[10px] font-semibold tracking-widest transition-colors ${
+                        showTransparent ? 'text-brand-200' : 'text-brand-500'
+                    }`}
+                >
                 EDUCATION
               </span>
               </div>
             </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-0.5">
+            {/* ── Zone 2: Desktop nav (hidden below xl) ────────────── */}
+            <nav
+                aria-label="Main navigation"
+                className="hidden xl:flex items-center justify-center flex-1 gap-0.5"
+            >
               {/* Home */}
               <Link
                   to="/"
-                  className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
-                      location.pathname === '/'
-                          ? showTransparent
-                              ? 'text-white bg-white/10'
-                              : 'text-brand-800 bg-brand-50'
-                          : showTransparent
-                              ? 'text-white/90 hover:text-white hover:bg-white/10'
-                              : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
-                  }`}
+                  className={`${navItemBase} ${location.pathname === '/' ? navItemActive : navItemIdle}`}
               >
                 {t.nav.home}
               </Link>
@@ -137,23 +170,29 @@ export default function Header() {
                   onMouseLeave={closePrograms}
               >
                 <button
-                    className={`inline-flex items-center gap-0.5 px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
-                        showTransparent
-                            ? 'text-white/90 hover:text-white hover:bg-white/10'
-                            : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
-                    }`}
+                    aria-haspopup="true"
+                    aria-expanded={programsOpen}
+                    className={`${navItemBase} ${navItemIdle}`}
                 >
-                  <span>{t.nav.programs}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${programsOpen ? 'rotate-180' : ''}`} />
+                  {t.nav.programs}
+                  <ChevronDown
+                      className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 ${
+                          programsOpen ? 'rotate-180' : ''
+                      }`}
+                  />
                 </button>
                 {programsOpen && (
-                    <div className="absolute top-full left-0 pt-2 w-72">
-                      <div className="bg-white rounded-xl shadow-xl border border-warm-100 overflow-hidden py-2">
+                    <div
+                        className="absolute top-full left-0 pt-2 w-64"
+                        onMouseEnter={openPrograms}
+                        onMouseLeave={closePrograms}
+                    >
+                      <div className="bg-white rounded-xl shadow-xl border border-warm-100 overflow-hidden py-1.5">
                         {t.nav.programItems.map((item) => (
                             <Link
                                 key={item.label}
                                 to={item.href}
-                                className="block px-5 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-warm-50 font-medium transition-colors"
+                                className="block px-4 py-2.5 text-sm text-brand-700 hover:text-brand-900 hover:bg-warm-50 font-medium transition-colors"
                             >
                               {item.label}
                             </Link>
@@ -166,14 +205,8 @@ export default function Header() {
               {/* Homeschool Plans */}
               <Link
                   to="/services"
-                  className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
-                      location.pathname === '/services'
-                          ? showTransparent
-                              ? 'text-white bg-white/10'
-                              : 'text-brand-800 bg-brand-50'
-                          : showTransparent
-                              ? 'text-white/90 hover:text-white hover:bg-white/10'
-                              : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
+                  className={`${navItemBase} ${
+                      location.pathname === '/services' ? navItemActive : navItemIdle
                   }`}
               >
                 {t.nav.services}
@@ -186,23 +219,29 @@ export default function Header() {
                   onMouseLeave={closeAssessments}
               >
                 <button
-                    className={`inline-flex items-center gap-0.5 px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
-                        showTransparent
-                            ? 'text-white/90 hover:text-white hover:bg-white/10'
-                            : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
-                    }`}
+                    aria-haspopup="true"
+                    aria-expanded={assessmentsOpen}
+                    className={`${navItemBase} ${navItemIdle}`}
                 >
-                  <span>{t.nav.assessments}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${assessmentsOpen ? 'rotate-180' : ''}`} />
+                  {t.nav.assessments}
+                  <ChevronDown
+                      className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 ${
+                          assessmentsOpen ? 'rotate-180' : ''
+                      }`}
+                  />
                 </button>
                 {assessmentsOpen && (
-                    <div className="absolute top-full left-0 pt-2 w-72">
-                      <div className="bg-white rounded-xl shadow-xl border border-warm-100 overflow-hidden py-2">
+                    <div
+                        className="absolute top-full left-0 pt-2 w-72"
+                        onMouseEnter={openAssessments}
+                        onMouseLeave={closeAssessments}
+                    >
+                      <div className="bg-white rounded-xl shadow-xl border border-warm-100 overflow-hidden py-1.5">
                         {t.nav.assessmentItems.map((item) => (
                             <Link
                                 key={item.label}
                                 to={item.href}
-                                className="block px-5 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-warm-50 font-medium transition-colors"
+                                className="block px-4 py-2.5 text-sm text-brand-700 hover:text-brand-900 hover:bg-warm-50 font-medium transition-colors"
                             >
                               {item.label}
                             </Link>
@@ -212,60 +251,56 @@ export default function Header() {
                 )}
               </div>
 
-              {/* Tuition & Enrollment */}
+              {/* Payment */}
               <Link
                   to="/payment-methods"
-                  className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
-                      location.pathname === '/payment-methods'
-                          ? showTransparent
-                              ? 'text-white bg-white/10'
-                              : 'text-brand-800 bg-brand-50'
-                          : showTransparent
-                              ? 'text-white/90 hover:text-white hover:bg-white/10'
-                              : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
+                  className={`${navItemBase} ${
+                      location.pathname === '/payment-methods' ? navItemActive : navItemIdle
                   }`}
               >
                 {t.nav.payment}
               </Link>
 
-              {/* Remaining links */}
-              {navLinks.filter((l) => !l.hidden && l.key !== 'home' && l.key !== 'services' && l.key !== 'payment').map((link) => {
-                const label = t.nav[link.key];
-                const isActive = location.pathname.startsWith(link.href);
-                return (
-                    <Link
-                        key={link.href}
-                        to={link.href}
-                        className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
-                            isActive
-                                ? showTransparent
-                                    ? 'text-white bg-white/10'
-                                    : 'text-brand-800 bg-brand-50'
-                                : showTransparent
-                                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                                    : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
-                        }`}
-                    >
-                      {label}
-                    </Link>
-                );
-              })}
+              {/* Remaining links (about, contact) */}
+              {navLinks
+                  .filter(
+                      (l) =>
+                          !l.hidden &&
+                          l.key !== 'home' &&
+                          l.key !== 'services' &&
+                          l.key !== 'payment'
+                  )
+                  .map((link) => {
+                    const label = t.nav[link.key];
+                    const isActive = location.pathname === link.href;
+                    return (
+                        <Link
+                            key={link.href}
+                            to={link.href}
+                            className={`${navItemBase} ${isActive ? navItemActive : navItemIdle}`}
+                        >
+                          {label}
+                        </Link>
+                    );
+                  })}
+            </nav>
 
+            {/* ── Zone 3: CTA + mobile controls ────────────────────── */}
+            <div className="flex items-center gap-3 flex-none ml-auto xl:ml-0">
+              {/* Desktop CTA */}
               <button
                   onClick={() => window.dispatchEvent(new Event('openLeadModal'))}
-                  className="ml-2 inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all hover:shadow-md"
+                  className="hidden xl:inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-normal transition-all hover:shadow-md"
               >
                 {t.nav.scheduleConsultation}
               </button>
-            </nav>
 
-            {/* Mobile controls */}
-            <div className="flex items-center gap-2 lg:hidden">
+              {/* Mobile: language toggle */}
               <button
                   onClick={toggleLocale}
-                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
+                  className={`xl:hidden inline-flex items-center gap-1.5 h-10 px-3 rounded-lg text-sm font-semibold transition-all ${
                       showTransparent
-                          ? 'text-white/90 hover:text-white hover:bg-white/10 border border-white/20'
+                          ? 'text-white/90 hover:text-white hover:bg-white/10 border border-white/25'
                           : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100 border border-warm-200'
                   }`}
                   aria-label="Toggle language"
@@ -274,27 +309,46 @@ export default function Header() {
                 {locale === 'en' ? 'ES' : 'EN'}
               </button>
 
+              {/* Mobile: hamburger */}
               <button
                   onClick={() => setIsOpen(!isOpen)}
-                  className={`p-2 rounded-lg transition-colors ${
-                      showTransparent ? 'text-white hover:bg-white/10' : 'text-brand-800 hover:bg-warm-100'
+                  aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                  aria-expanded={isOpen}
+                  aria-controls="mobile-menu"
+                  className={`xl:hidden h-10 w-10 flex items-center justify-center rounded-lg transition-colors ${
+                      showTransparent
+                          ? 'text-white hover:bg-white/10'
+                          : 'text-brand-800 hover:bg-warm-100'
                   }`}
-                  aria-label="Toggle menu"
               >
-                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
+
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* ── Mobile menu ────────────────────────────────────────────── */}
         {isOpen && (
-            <div className="lg:hidden bg-white border-t border-warm-100 shadow-lg max-h-[calc(100vh-80px)] overflow-y-auto">
-              <nav className="flex flex-col px-4 py-4 gap-1">
+            <div
+                id="mobile-menu"
+                className="xl:hidden fixed inset-0 top-[68px] bg-white z-40 flex flex-col"
+                style={{ top: scrolled || !isHome ? '68px' : '68px' }}
+            >
+              {/* Location bar on mobile */}
+              <div className="bg-brand-900 text-brand-100 flex items-center gap-2 px-5 py-2.5 text-xs">
+                <MapPin className="w-3 h-3 flex-shrink-0" />
+                <span>Orlando, FL · Serving Central Florida</span>
+              </div>
+
+              <nav
+                  aria-label="Mobile navigation"
+                  className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-1"
+              >
                 <Link
                     to="/"
                     onClick={() => setIsOpen(false)}
-                    className="px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   {t.nav.home}
                 </Link>
@@ -303,19 +357,28 @@ export default function Header() {
                 <div>
                   <button
                       onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
-                      className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                      aria-expanded={mobileProgramsOpen}
+                      aria-controls="mobile-programs"
+                      className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                   >
                     {t.nav.programs}
-                    <ChevronDown className={`w-4 h-4 transition-transform ${mobileProgramsOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                            mobileProgramsOpen ? 'rotate-180' : ''
+                        }`}
+                    />
                   </button>
                   {mobileProgramsOpen && (
-                      <div className="ml-4 mt-1 mb-1 border-l-2 border-warm-200 pl-2 flex flex-col">
+                      <div
+                          id="mobile-programs"
+                          className="mt-1 mb-1 ml-4 border-l-2 border-warm-200 pl-3 flex flex-col gap-0.5"
+                      >
                         {t.nav.programItems.map((item) => (
                             <Link
                                 key={item.label}
                                 to={item.href}
                                 onClick={() => setIsOpen(false)}
-                                className="px-4 py-2.5 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors"
+                                className="flex items-center h-10 px-4 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                             >
                               {item.label}
                             </Link>
@@ -324,32 +387,40 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* Homeschool Plans */}
                 <Link
                     to="/services"
                     onClick={() => setIsOpen(false)}
-                    className="px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   {t.nav.services}
                 </Link>
 
-                {/* Academic Assessments expandable */}
+                {/* Assessments expandable */}
                 <div>
                   <button
                       onClick={() => setMobileAssessmentsOpen(!mobileAssessmentsOpen)}
-                      className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                      aria-expanded={mobileAssessmentsOpen}
+                      aria-controls="mobile-assessments"
+                      className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                   >
                     {t.nav.assessments}
-                    <ChevronDown className={`w-4 h-4 transition-transform ${mobileAssessmentsOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                            mobileAssessmentsOpen ? 'rotate-180' : ''
+                        }`}
+                    />
                   </button>
                   {mobileAssessmentsOpen && (
-                      <div className="ml-4 mt-1 mb-1 border-l-2 border-warm-200 pl-2 flex flex-col">
+                      <div
+                          id="mobile-assessments"
+                          className="mt-1 mb-1 ml-4 border-l-2 border-warm-200 pl-3 flex flex-col gap-0.5"
+                      >
                         {t.nav.assessmentItems.map((item) => (
                             <Link
                                 key={item.label}
                                 to={item.href}
                                 onClick={() => setIsOpen(false)}
-                                className="px-4 py-2.5 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors"
+                                className="flex items-center h-10 px-4 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                             >
                               {item.label}
                             </Link>
@@ -361,37 +432,48 @@ export default function Header() {
                 <Link
                     to="/payment-methods"
                     onClick={() => setIsOpen(false)}
-                    className="px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                    className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   {t.nav.payment}
                 </Link>
 
-                {navLinks.filter((l) => !l.hidden && l.key !== 'home' && l.key !== 'services' && l.key !== 'payment').map((link) => {
-                  const label = t.nav[link.key];
-                  return (
-                      <Link
-                          key={link.href}
-                          to={link.href}
-                          onClick={() => setIsOpen(false)}
-                          className="px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
-                      >
-                        {label}
-                      </Link>
-                  );
-                })}
+                {navLinks
+                    .filter(
+                        (l) =>
+                            !l.hidden &&
+                            l.key !== 'home' &&
+                            l.key !== 'services' &&
+                            l.key !== 'payment'
+                    )
+                    .map((link) => {
+                      const label = t.nav[link.key];
+                      return (
+                          <Link
+                              key={link.href}
+                              to={link.href}
+                              onClick={() => setIsOpen(false)}
+                              className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                          >
+                            {label}
+                          </Link>
+                      );
+                    })}
 
-                <button
-                    onClick={() => {
-                      window.dispatchEvent(new Event('openLeadModal'));
-                      setIsOpen(false);
-                    }}
-                    className="mt-2 inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-5 py-3 rounded-lg font-semibold transition-all"
-                >
-                  {t.nav.scheduleConsultation}
-                </button>
+                <div className="mt-4 pt-4 border-t border-warm-100">
+                  <button
+                      onClick={() => {
+                        window.dispatchEvent(new Event('openLeadModal'));
+                        setIsOpen(false);
+                      }}
+                      className="w-full flex items-center justify-center h-12 bg-accent-500 hover:bg-accent-600 text-white rounded-lg font-bold text-sm uppercase tracking-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
+                  >
+                    {t.nav.scheduleConsultation}
+                  </button>
+                </div>
               </nav>
             </div>
         )}
+
       </header>
   );
 }
