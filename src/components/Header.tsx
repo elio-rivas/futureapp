@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Globe, ChevronDown, MapPin } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown, MapPin } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const LOGO_URL = 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/dWxv3J07bnh78Qgv/screenshot-2025-02-01-161224-AVL7Zbq4VKsNQVn6.png';
@@ -11,20 +11,23 @@ const navLinks = [
   { key: 'home' as const, href: '/' },
   { key: 'summerProgram' as const, href: '/summer-program', hidden: !SHOW_SUMMER_PROGRAM },
   { key: 'services' as const, href: '/services' },
+  { key: 'payment' as const, href: '/payment-methods' },
   { key: 'about' as const, href: '/about' },
   { key: 'contact' as const, href: '/contact' },
-  { key: 'payment' as const, href: '/payment-methods' },
 ];
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [programsOpen, setProgramsOpen] = useState(false);
+  const [assessmentsOpen, setAssessmentsOpen] = useState(false);
   const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false);
+  const [mobileAssessmentsOpen, setMobileAssessmentsOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
   const { locale, toggleLocale, t } = useLanguage();
   const programsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const assessmentsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -36,7 +39,9 @@ export default function Header() {
   useEffect(() => {
     setIsOpen(false);
     setProgramsOpen(false);
+    setAssessmentsOpen(false);
     setMobileProgramsOpen(false);
+    setMobileAssessmentsOpen(false);
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
@@ -50,6 +55,14 @@ export default function Header() {
     programsTimer.current = setTimeout(() => setProgramsOpen(false), 150);
   };
 
+  const openAssessments = () => {
+    if (assessmentsTimer.current) clearTimeout(assessmentsTimer.current);
+    setAssessmentsOpen(true);
+  };
+  const closeAssessments = () => {
+    assessmentsTimer.current = setTimeout(() => setAssessmentsOpen(false), 150);
+  };
+
   return (
       <header className="fixed top-0 left-0 right-0 z-50">
         {/* Top info bar */}
@@ -60,11 +73,6 @@ export default function Header() {
               <span>Orlando, FL · Serving Central Florida</span>
             </div>
             <div className="flex items-center gap-5">
-              <a href="tel:4073019979" className="flex items-center gap-1.5 text-brand-100 hover:text-white transition-colors">
-                <Phone className="w-3.5 h-3.5" />
-                (407) 301-9979
-              </a>
-              <span className="text-brand-300">|</span>
               <button
                   onClick={toggleLocale}
                   className="flex items-center gap-1.5 text-brand-100 hover:text-white transition-colors font-semibold"
@@ -105,11 +113,11 @@ export default function Header() {
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-0.5">
               {/* Home */}
               <Link
                   to="/"
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide transition-all ${
+                  className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
                       location.pathname === '/'
                           ? showTransparent
                               ? 'text-white bg-white/10'
@@ -129,14 +137,14 @@ export default function Header() {
                   onMouseLeave={closePrograms}
               >
                 <button
-                    className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide transition-all ${
+                    className={`inline-flex items-center gap-0.5 px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
                         showTransparent
                             ? 'text-white/90 hover:text-white hover:bg-white/10'
                             : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
                     }`}
                 >
-                  {t.nav.programs}
-                  <ChevronDown className={`w-4 h-4 transition-transform ${programsOpen ? 'rotate-180' : ''}`} />
+                  <span>{t.nav.programs}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${programsOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {programsOpen && (
                     <div className="absolute top-full left-0 pt-2 w-72">
@@ -155,15 +163,80 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Homeschool Plans */}
+              <Link
+                  to="/services"
+                  className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
+                      location.pathname === '/services'
+                          ? showTransparent
+                              ? 'text-white bg-white/10'
+                              : 'text-brand-800 bg-brand-50'
+                          : showTransparent
+                              ? 'text-white/90 hover:text-white hover:bg-white/10'
+                              : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
+                  }`}
+              >
+                {t.nav.services}
+              </Link>
+
+              {/* Academic Assessments dropdown */}
+              <div
+                  className="relative"
+                  onMouseEnter={openAssessments}
+                  onMouseLeave={closeAssessments}
+              >
+                <button
+                    className={`inline-flex items-center gap-0.5 px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
+                        showTransparent
+                            ? 'text-white/90 hover:text-white hover:bg-white/10'
+                            : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
+                    }`}
+                >
+                  <span>{t.nav.assessments}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${assessmentsOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {assessmentsOpen && (
+                    <div className="absolute top-full left-0 pt-2 w-72">
+                      <div className="bg-white rounded-xl shadow-xl border border-warm-100 overflow-hidden py-2">
+                        {t.nav.assessmentItems.map((item) => (
+                            <Link
+                                key={item.label}
+                                to={item.href}
+                                className="block px-5 py-3 text-sm text-brand-700 hover:text-brand-900 hover:bg-warm-50 font-medium transition-colors"
+                            >
+                              {item.label}
+                            </Link>
+                        ))}
+                      </div>
+                    </div>
+                )}
+              </div>
+
+              {/* Tuition & Enrollment */}
+              <Link
+                  to="/payment-methods"
+                  className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
+                      location.pathname === '/payment-methods'
+                          ? showTransparent
+                              ? 'text-white bg-white/10'
+                              : 'text-brand-800 bg-brand-50'
+                          : showTransparent
+                              ? 'text-white/90 hover:text-white hover:bg-white/10'
+                              : 'text-brand-700 hover:text-brand-900 hover:bg-warm-100'
+                  }`}
+              >
+                {t.nav.payment}
+              </Link>
+
               {/* Remaining links */}
-              {navLinks.filter((l) => !l.hidden && l.key !== 'home').map((link) => {
+              {navLinks.filter((l) => !l.hidden && l.key !== 'home' && l.key !== 'services' && l.key !== 'payment').map((link) => {
                 const label = t.nav[link.key];
                 const isActive = location.pathname.startsWith(link.href);
                 return (
                     <Link
                         key={link.href}
                         to={link.href}
-                        className={`px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wide transition-all ${
+                        className={`px-3 py-2 whitespace-nowrap rounded-lg text-xs font-semibold uppercase tracking-wide transition-all ${
                             isActive
                                 ? showTransparent
                                     ? 'text-white bg-white/10'
@@ -178,13 +251,12 @@ export default function Header() {
                 );
               })}
 
-              <a
-                  href="tel:4073019979"
-                  className="ml-3 inline-flex items-center gap-2 bg-brand-700 hover:bg-brand-800 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:shadow-md"
+              <button
+                  onClick={() => window.dispatchEvent(new Event('openLeadModal'))}
+                  className="ml-2 inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all hover:shadow-md"
               >
-                <Phone className="w-4 h-4" />
-                (407) 301-9979
-              </a>
+                {t.nav.scheduleConsultation}
+              </button>
             </nav>
 
             {/* Mobile controls */}
@@ -252,7 +324,49 @@ export default function Header() {
                   )}
                 </div>
 
-                {navLinks.filter((l) => !l.hidden && l.key !== 'home').map((link) => {
+                {/* Homeschool Plans */}
+                <Link
+                    to="/services"
+                    onClick={() => setIsOpen(false)}
+                    className="px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                >
+                  {t.nav.services}
+                </Link>
+
+                {/* Academic Assessments expandable */}
+                <div>
+                  <button
+                      onClick={() => setMobileAssessmentsOpen(!mobileAssessmentsOpen)}
+                      className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                  >
+                    {t.nav.assessments}
+                    <ChevronDown className={`w-4 h-4 transition-transform ${mobileAssessmentsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {mobileAssessmentsOpen && (
+                      <div className="ml-4 mt-1 mb-1 border-l-2 border-warm-200 pl-2 flex flex-col">
+                        {t.nav.assessmentItems.map((item) => (
+                            <Link
+                                key={item.label}
+                                to={item.href}
+                                onClick={() => setIsOpen(false)}
+                                className="px-4 py-2.5 rounded-lg text-brand-700 hover:text-brand-900 hover:bg-warm-50 text-sm font-medium transition-colors"
+                            >
+                              {item.label}
+                            </Link>
+                        ))}
+                      </div>
+                  )}
+                </div>
+
+                <Link
+                    to="/payment-methods"
+                    onClick={() => setIsOpen(false)}
+                    className="px-4 py-3 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold uppercase tracking-wide text-sm transition-colors"
+                >
+                  {t.nav.payment}
+                </Link>
+
+                {navLinks.filter((l) => !l.hidden && l.key !== 'home' && l.key !== 'services' && l.key !== 'payment').map((link) => {
                   const label = t.nav[link.key];
                   return (
                       <Link
@@ -266,13 +380,15 @@ export default function Header() {
                   );
                 })}
 
-                <a
-                    href="tel:4073019979"
-                    className="mt-2 inline-flex items-center justify-center gap-2 bg-brand-700 text-white px-5 py-3 rounded-lg font-semibold"
+                <button
+                    onClick={() => {
+                      window.dispatchEvent(new Event('openLeadModal'));
+                      setIsOpen(false);
+                    }}
+                    className="mt-2 inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-5 py-3 rounded-lg font-semibold transition-all"
                 >
-                  <Phone className="w-4 h-4" />
-                  (407) 301-9979
-                </a>
+                  {t.nav.scheduleConsultation}
+                </button>
               </nav>
             </div>
         )}
