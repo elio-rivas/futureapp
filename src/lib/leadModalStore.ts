@@ -1,32 +1,12 @@
-import { useSyncExternalStore } from 'react';
-
-type ModalState = { open: boolean };
-
-let state: ModalState = { open: false };
-const listeners = new Set<() => void>();
-
-function emit(next: ModalState) {
-    state = next;
-    listeners.forEach((fn) => fn());
-}
+let openCallback: (() => void) | null = null;
 
 export function openLeadModal() {
-    emit({ open: true });
+    openCallback?.();
 }
 
-export function closeLeadModal() {
-    emit({ open: false });
-}
-
-function subscribe(callback: () => void) {
-    listeners.add(callback);
-    return () => listeners.delete(callback);
-}
-
-function getSnapshot() {
-    return state;
-}
-
-export function useLeadModal() {
-    return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+export function registerOpenLeadModal(cb: () => void) {
+    openCallback = cb;
+    return () => {
+        if (openCallback === cb) openCallback = null;
+    };
 }

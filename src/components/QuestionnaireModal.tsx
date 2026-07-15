@@ -1,20 +1,19 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X, BookOpen } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { QuestionnaireForm } from './ParentQuestionnaire';
-import { useLeadModal, closeLeadModal } from '../lib/leadModalStore';
+import { registerOpenLeadModal } from '../lib/leadModalStore';
 
 const SESSION_KEY = 'lead_popup_shown_this_session';
 
 export default function QuestionnaireModal() {
   const { t } = useLanguage();
-  const leadModal = useLeadModal();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const triggeredRef = useRef(false);
 
+  // Auto-show after delay or scroll (once per tab session)
   useEffect(() => {
-    // Only suppress if already shown in this browser tab session
     try {
       if (sessionStorage.getItem(SESSION_KEY)) return;
     } catch { /* sessionStorage unavailable -- show popup */ }
@@ -39,15 +38,14 @@ export default function QuestionnaireModal() {
     };
   }, []);
 
-  // Respond to CTA clicks from the modal store
+  // Register the open callback so navbar/contact buttons can open this modal
   useEffect(() => {
-    if (leadModal.open) {
+    return registerOpenLeadModal(() => {
       triggeredRef.current = true;
       setIsOpen(true);
       try { sessionStorage.setItem(SESSION_KEY, '1'); } catch { /* noop */ }
-      closeLeadModal();
-    }
-  }, [leadModal.open]);
+    });
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
