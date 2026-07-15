@@ -72,7 +72,7 @@ export default function Footer() {
             <nav className="flex flex-col gap-3">
               <Link to="/" className="text-brand-300 hover:text-white transition-colors">{t.nav.home}</Link>
               <Link to="/summer-program" className="text-brand-300 hover:text-white transition-colors">{t.nav.summerProgram}</Link>
-              <Link to="/services" className="text-brand-300 hover:text-white transition-colors">{t.nav.services}</Link>
+              <Link to="/payment-methods" className="text-brand-300 hover:text-white transition-colors">{t.nav.services}</Link>
               <Link to="/about" className="text-brand-300 hover:text-white transition-colors">{t.nav.about}</Link>
               <Link to="/contact" className="text-brand-300 hover:text-white transition-colors">{t.nav.contact}</Link>
             </nav>
