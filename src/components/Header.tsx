@@ -12,8 +12,8 @@ const SHOW_SUMMER_PROGRAM = false;
 const navLinks = [
   { key: 'home' as const, href: '/' },
   { key: 'summerProgram' as const, href: '/summer-program', hidden: !SHOW_SUMMER_PROGRAM },
-  { key: 'services' as const, href: '/payment-methods' },
-  { key: 'payment' as const, href: '/payment-methods' },
+  { key: 'services' as const, href: '/homeschool-plans' },
+  { key: 'payment' as const, href: '/tuition-enrollment' },
   { key: 'about' as const, href: '/about' },
   { key: 'contact' as const, href: '/contact' },
 ];
@@ -169,9 +169,9 @@ export default function Header() {
 
             {/* Homeschool Plans */}
             <Link
-              to="/payment-methods"
+              to="/homeschool-plans"
               className={`${navItemBase} ${
-                location.pathname === '/payment-methods' ? navItemActive : navItemIdle
+                location.pathname === '/homeschool-plans' ? navItemActive : navItemIdle
               }`}
             >
               {t.nav.services}
@@ -218,9 +218,9 @@ export default function Header() {
 
             {/* Payment */}
             <Link
-              to="/payment-methods"
+              to="/tuition-enrollment"
               className={`${navItemBase} ${
-                location.pathname === '/payment-methods' ? navItemActive : navItemIdle
+                location.pathname === '/tuition-enrollment' ? navItemActive : navItemIdle
               }`}
             >
               {t.nav.payment}
@@ -341,7 +341,7 @@ export default function Header() {
             </div>
 
             <Link
-              to="/payment-methods"
+              to="/homeschool-plans"
               onClick={() => setIsOpen(false)}
               className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
             >
@@ -382,7 +382,7 @@ export default function Header() {
             </div>
 
             <Link
-              to="/payment-methods"
+              to="/tuition-enrollment"
               onClick={() => setIsOpen(false)}
               className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
             >

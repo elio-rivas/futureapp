@@ -7,7 +7,8 @@ import SummerProgramPage from './pages/SummerProgramPage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
-import PaymentPage from './pages/PaymentPage';
+import HomeschoolPlansPage from './pages/HomeschoolPlansPage';
+import TuitionEnrollmentPage from './pages/TuitionEnrollmentPage';
 import QuestionnaireModal from './components/QuestionnaireModal';
 
 export default function App() {
@@ -23,7 +24,8 @@ export default function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/payment-methods" element={<PaymentPage />} />
+              <Route path="/homeschool-plans" element={<HomeschoolPlansPage />} />
+              <Route path="/tuition-enrollment" element={<TuitionEnrollmentPage />} />
             </Routes>
           </main>
           <Footer />
