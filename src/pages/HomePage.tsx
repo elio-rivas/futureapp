@@ -20,23 +20,23 @@ const SHOW_SUMMER_PROGRAM = false;
 const SHOW_STUDENT_GROWTH = false;
 
 export default function HomePage() {
-        return (
-            <>
-                    {SHOW_HERO_INTRO && <HeroIntro />}
-                    <ServicesCarousel />
-                    <ParentQuestionnaire />
-                    {SHOW_SUMMER_PROGRAM && <SummerProgram />}
-                    <ParentConcern />
-                    <WhyOneOnOne />
-                    <ProgramStructure />
-                    {SHOW_STUDENT_GROWTH && <StudentGrowth />}
-                    <StoryVideo />
-                    <WhyFamiliesChoose />
-                    <MeetDirector />
-                    <ParentTestimonials />
-                    <ParentExpectations />
-                    <RightFit />
-                    <CTA />
-            </>
-        );
+  return (
+    <>
+      {SHOW_HERO_INTRO && <HeroIntro />}
+      <ServicesCarousel />
+      <ParentQuestionnaire />
+      {SHOW_SUMMER_PROGRAM && <SummerProgram />}
+      <ParentConcern />
+      <WhyOneOnOne />
+      <ProgramStructure />
+      {SHOW_STUDENT_GROWTH && <StudentGrowth />}
+      <StoryVideo />
+      <WhyFamiliesChoose />
+      <MeetDirector />
+      <ParentTestimonials />
+      <ParentExpectations />
+      <RightFit />
+      <CTA />
+    </>
+  );
 }
