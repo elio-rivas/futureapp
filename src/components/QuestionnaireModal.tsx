@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { X, BookOpen } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { QuestionnaireForm } from './ParentQuestionnaire';
-import { registerOpenLeadModal } from '../lib/leadModalStore';
+import { onOpenLeadModal } from '../lib/leadModalStore';
 
 const SESSION_KEY = 'lead_popup_shown_this_session';
 
@@ -40,7 +40,7 @@ export default function QuestionnaireModal() {
 
   // Register the open callback so navbar/contact buttons can open this modal
   useEffect(() => {
-    return registerOpenLeadModal(() => {
+    return onOpenLeadModal(() => {
       triggeredRef.current = true;
       setIsOpen(true);
       try { sessionStorage.setItem(SESSION_KEY, '1'); } catch { /* noop */ }
