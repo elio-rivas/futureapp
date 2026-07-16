@@ -181,15 +181,6 @@ export default function ContactPage() {
                   {c.learningCenterDesc}
                 </p>
               </div>
-              <a
-                href="https://maps.google.com/?q=944+E+Osceola+Pkwy+Kissimmee+FL+34744"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-auto w-full flex items-center justify-center gap-2 bg-brand-900 hover:bg-brand-800 text-white px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-colors"
-              >
-                <Calendar className="w-4 h-4" />
-                {c.byAppointment}
-              </a>
             </div>
 
             {/* Administration Office */}
@@ -211,15 +202,6 @@ export default function ContactPage() {
                   {c.adminOfficeDesc}
                 </p>
               </div>
-              <a
-                href="https://maps.google.com/?q=821+W+Emmett+St+Kissimmee+FL+34741"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-auto w-full flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-colors"
-              >
-                <Calendar className="w-4 h-4" />
-                {c.byAppointment}
-              </a>
             </div>
 
             {/* Online Services */}
@@ -234,10 +216,6 @@ export default function ContactPage() {
                   {c.onlineServicesDesc}
                 </p>
               </div>
-              <button className="mt-auto w-full flex items-center justify-center gap-2 bg-brand-900 hover:bg-brand-800 text-white px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-colors">
-                <Calendar className="w-4 h-4" />
-                {c.byAppointment}
-              </button>
             </div>
           </div>
 
@@ -570,7 +548,10 @@ export default function ContactPage() {
             </div>
             <div className="flex flex-col items-center gap-5 flex-shrink-0">
               <button
-                onClick={() => openLeadModal()}
+                onClick={() => openLeadModal({
+                  defaultService: 'Appointment request',
+                  defaultMessage: 'I am interested in an appointment.',
+                })}
                 className="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-400 text-white px-10 py-4 rounded-xl font-bold text-lg uppercase tracking-widest transition-all hover:shadow-xl"
               >
                 <Calendar className="w-5 h-5" />

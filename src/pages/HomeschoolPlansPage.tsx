@@ -194,7 +194,10 @@ export default function HomeschoolPlansPage() {
                     </div>
 
                     <button
-                      onClick={() => openLeadModal()}
+                      onClick={() => openLeadModal({
+                        defaultService: 'Homeschool Students',
+                        defaultMessage: `I am interested in ${plan.name} — ${plan.tagline}`,
+                      })}
                       className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-widest transition-all hover:shadow-lg ${
                         isPopular
                           ? 'bg-green-600 hover:bg-green-700 text-white'

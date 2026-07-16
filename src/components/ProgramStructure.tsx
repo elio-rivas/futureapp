@@ -1,4 +1,4 @@
-import { Calendar, Clock, BookOpen, UserCheck } from 'lucide-react';
+import { Calendar, Clock, UserCheck } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 export default function ProgramStructure() {
@@ -24,20 +24,16 @@ export default function ProgramStructure() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-16">
-          <div className="bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-16">
+          <div className="w-52 bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
             <Calendar className="w-5 h-5 text-accent-400 mx-auto mb-2" />
             <div className="text-white font-bold text-sm">{t.programStructure.days}</div>
           </div>
-          <div className="bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
+          <div className="w-52 bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
             <Clock className="w-5 h-5 text-accent-400 mx-auto mb-2" />
             <div className="text-white font-bold text-sm">{t.programStructure.time}</div>
           </div>
-          <div className="bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
-            <BookOpen className="w-5 h-5 text-accent-400 mx-auto mb-2" />
-            <div className="text-white font-bold text-sm">{t.programStructure.duration}</div>
-          </div>
-          <div className="bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
+          <div className="w-52 bg-white/[0.06] backdrop-blur-sm border border-white/10 rounded-xl p-5 text-center">
             <UserCheck className="w-5 h-5 text-accent-400 mx-auto mb-2" />
             <div className="text-white font-bold text-sm">{t.programStructure.format}</div>
           </div>

@@ -9,10 +9,11 @@ const RATE_LIMIT_MS = 60_000;
 interface QuestionnaireFormProps {
   source?: string;
   defaultService?: string;
+  defaultMessage?: string;
   onSuccess?: () => void;
 }
 
-export function QuestionnaireForm({ source = 'summer_questionnaire', defaultService = '', onSuccess }: QuestionnaireFormProps) {
+export function QuestionnaireForm({ source = 'summer_questionnaire', defaultService = '', defaultMessage = '', onSuccess }: QuestionnaireFormProps) {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     parent_name: '',
@@ -21,7 +22,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
     child_age_grade: '',
     main_concern: '',
     interested_service: defaultService,
-    message: '',
+    message: defaultMessage,
   });
   const [honeypot, setHoneypot] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');

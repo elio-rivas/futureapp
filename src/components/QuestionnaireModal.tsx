@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { X, BookOpen } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { QuestionnaireForm } from './ParentQuestionnaire';
-import { onOpenLeadModal } from '../lib/leadModalStore';
+import { onOpenLeadModal, type LeadModalPayload } from '../lib/leadModalStore';
 
 const SESSION_KEY = 'lead_popup_shown_this_session';
 
@@ -10,6 +10,7 @@ export default function QuestionnaireModal() {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [prefill, setPrefill] = useState<LeadModalPayload>({});
   const triggeredRef = useRef(false);
 
   // Auto-show after delay or scroll (once per tab session)
@@ -40,8 +41,9 @@ export default function QuestionnaireModal() {
 
   // Register the open callback so navbar/contact buttons can open this modal
   useEffect(() => {
-    return onOpenLeadModal(() => {
+    return onOpenLeadModal((payload) => {
       triggeredRef.current = true;
+      setPrefill(payload);
       setIsOpen(true);
       try { sessionStorage.setItem(SESSION_KEY, '1'); } catch { /* noop */ }
     });
@@ -125,7 +127,8 @@ export default function QuestionnaireModal() {
 
           <QuestionnaireForm
             source="popup_modal"
-            defaultService={t.questionnaire.serviceOptions[0]}
+            defaultService={prefill.defaultService ?? t.questionnaire.serviceOptions[0]}
+            defaultMessage={prefill.defaultMessage}
             onSuccess={() => {
               setTimeout(close, 4000);
             }}
