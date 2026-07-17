@@ -258,7 +258,7 @@ export default function ContactPage() {
               {
                 icon: <Mail className="w-8 h-8" />,
                 title: c.connectEmail,
-                contact: 'info@futurefoundationseducation.com',
+                contact: 'info@futurefoundationsedu.com',
                 desc: c.connectEmailDesc,
                 accent: false,
               },
@@ -515,9 +515,9 @@ export default function ContactPage() {
                   <Phone className="w-4 h-4 text-accent-500 group-hover:text-accent-600" />
                   (407) 301-9979
                 </a>
-                <a href="mailto:info@futurefoundationseducation.com" className="flex items-center gap-3 text-sm text-brand-700 hover:text-brand-900 transition-colors group break-all">
+                <a href="mailto:info@futurefoundationsedu.com" className="flex items-center gap-3 text-sm text-brand-700 hover:text-brand-900 transition-colors group break-all">
                   <Mail className="w-4 h-4 text-accent-500 flex-shrink-0 group-hover:text-accent-600" />
-                  info@futurefoundationseducation.com
+                  info@futurefoundationsedu.com
                 </a>
                 <div className="flex items-center gap-3 text-sm text-brand-700">
                   <MapPin className="w-4 h-4 text-accent-500 flex-shrink-0" />

@@ -8,7 +8,9 @@ import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
 import HomeschoolPlansPage from './pages/HomeschoolPlansPage';
+import ProgramsPage from './pages/ProgramsPage';
 import TuitionEnrollmentPage from './pages/TuitionEnrollmentPage';
+import AssessmentsPage from './pages/AssessmentsPage';
 import QuestionnaireModal from './components/QuestionnaireModal';
 
 export default function App() {
@@ -25,7 +27,9 @@ export default function App() {
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/homeschool-plans" element={<HomeschoolPlansPage />} />
+              <Route path="/programs" element={<ProgramsPage />} />
               <Route path="/tuition-enrollment" element={<TuitionEnrollmentPage />} />
+              <Route path="/assessments" element={<AssessmentsPage />} />
             </Routes>
           </main>
           <Footer />

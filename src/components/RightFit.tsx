@@ -1,4 +1,4 @@
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 export default function RightFit() {
@@ -31,22 +31,10 @@ export default function RightFit() {
             </ul>
           </div>
 
-          <div className="bg-brand-50 rounded-xl p-6 border border-brand-100 mb-10">
+          <div className="bg-brand-50 rounded-xl p-6 border border-brand-100">
             <p className="text-brand-700 text-sm leading-relaxed">
               {t.rightFit.notFit}
             </p>
-          </div>
-
-          <div className="text-center">
-            <a
-              href="https://form.jotform.com/261240438813049"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-brand-700 hover:bg-brand-800 text-white px-8 py-4 rounded-xl text-lg font-bold transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
-            >
-              {t.rightFit.ctaText}
-              <ArrowRight className="w-5 h-5" />
-            </a>
           </div>
         </div>
       </div>

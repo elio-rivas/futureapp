@@ -163,7 +163,7 @@ export default function HomeschoolPlansPage() {
                         <p className="font-display font-bold text-3xl text-brand-900">{plan.annual}</p>
                       </div>
                       <div className="pt-3 border-t border-warm-200">
-                        <p className="text-xs uppercase tracking-wider text-brand-500 mb-0.5">Registration Deposit</p>
+                        <p className="text-xs uppercase tracking-wider text-brand-500 mb-0.5">Initial Enrollment</p>
                         <p className="font-bold text-lg text-brand-800">{plan.registration}</p>
                       </div>
                     </div>
@@ -282,51 +282,6 @@ export default function HomeschoolPlansPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-         5. FLEXIBLE PAYMENT PLANS
-      ════════════════════════════════════════════════════════════════ */}
-      <section className="section-padding bg-warm-50 border-t border-warm-100">
-        <div className="container-max max-w-4xl">
-          <div className="bg-white rounded-2xl border border-warm-200 shadow-sm p-8 lg:p-10">
-            <div className="text-center mb-8">
-              <div className="w-14 h-14 rounded-2xl bg-brand-900 flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-7 h-7 text-accent-400" />
-              </div>
-              <h2 className="font-display text-2xl font-bold text-brand-900 uppercase tracking-wider mb-2">
-                {hs.paymentTitle}
-              </h2>
-              <p className="text-brand-600">{hs.paymentSubtitle}</p>
-            </div>
-
-            <div className="space-y-4">
-              {hs.paymentSchedules.map((sched, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 bg-warm-50 rounded-xl p-5 border border-warm-100"
-                >
-                  <div className="md:w-1/3">
-                    <span className="font-bold text-brand-900 text-sm">{sched.plan}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2 md:flex-1">
-                    {sched.payments.map((pay, j) => (
-                      <span
-                        key={j}
-                        className="inline-flex items-center gap-1.5 bg-white border border-warm-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-brand-700"
-                      >
-                        <Check className="w-3 h-3 text-green-600" />
-                        {pay}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-brand-500 text-sm italic text-center mt-6">{hs.paymentNote}</p>
           </div>
         </div>
       </section>

@@ -134,10 +134,11 @@ export default function Header() {
               onMouseEnter={openPrograms}
               onMouseLeave={closePrograms}
             >
-              <button
+              <Link
+                to="/programs"
                 aria-haspopup="true"
                 aria-expanded={programsOpen}
-                className={`${navItemBase} ${navItemIdle}`}
+                className={`${navItemBase} ${location.pathname === '/programs' ? navItemActive : navItemIdle}`}
               >
                 {t.nav.programs}
                 <ChevronDown
@@ -145,7 +146,7 @@ export default function Header() {
                     programsOpen ? 'rotate-180' : ''
                   }`}
                 />
-              </button>
+              </Link>
               {programsOpen && (
                 <div
                   className="absolute top-full left-0 pt-2 w-64"
@@ -183,10 +184,11 @@ export default function Header() {
               onMouseEnter={openAssessments}
               onMouseLeave={closeAssessments}
             >
-              <button
+              <Link
+                to="/assessments"
                 aria-haspopup="true"
                 aria-expanded={assessmentsOpen}
-                className={`${navItemBase} ${navItemIdle}`}
+                className={`${navItemBase} ${location.pathname === '/assessments' ? navItemActive : navItemIdle}`}
               >
                 {t.nav.assessments}
                 <ChevronDown
@@ -194,7 +196,7 @@ export default function Header() {
                     assessmentsOpen ? 'rotate-180' : ''
                   }`}
                 />
-              </button>
+              </Link>
               {assessmentsOpen && (
                 <div
                   className="absolute top-full left-0 pt-2 w-72"
@@ -349,19 +351,27 @@ export default function Header() {
             </Link>
 
             <div>
-              <button
-                onClick={() => setMobileAssessmentsOpen(!mobileAssessmentsOpen)}
-                aria-expanded={mobileAssessmentsOpen}
-                aria-controls="mobile-assessments"
-                className="w-full flex items-center justify-between h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
-              >
-                {t.nav.assessments}
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    mobileAssessmentsOpen ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
+              <div className="flex items-center justify-between">
+                <Link
+                  to="/assessments"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center h-11 px-4 rounded-lg text-brand-800 hover:text-brand-900 hover:bg-warm-50 font-semibold text-sm uppercase tracking-normal transition-colors"
+                >
+                  {t.nav.assessments}
+                </Link>
+                <button
+                  onClick={() => setMobileAssessmentsOpen(!mobileAssessmentsOpen)}
+                  aria-expanded={mobileAssessmentsOpen}
+                  aria-controls="mobile-assessments"
+                  className="h-11 w-11 flex items-center justify-center rounded-lg text-brand-800 hover:bg-warm-50 transition-colors"
+                >
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      mobileAssessmentsOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+              </div>
               {mobileAssessmentsOpen && (
                 <div
                   id="mobile-assessments"

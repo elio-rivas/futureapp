@@ -1,5 +1,6 @@
 import { ArrowRight, Phone } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { openLeadModal } from '../lib/leadModalStore';
 
 export default function CTA() {
   const { t } = useLanguage();
@@ -19,15 +20,13 @@ export default function CTA() {
           {t.cta.description}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="https://form.jotform.com/261240438813049"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => openLeadModal()}
             className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-xl hover:-translate-y-0.5"
           >
             {t.cta.enrollNow}
             <ArrowRight className="w-5 h-5" />
-          </a>
+          </button>
           <a
             href="tel:4073019979"
             className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all"

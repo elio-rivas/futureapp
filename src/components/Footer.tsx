@@ -92,9 +92,9 @@ export default function Footer() {
                 <Phone className="w-5 h-5 text-brand-400 flex-shrink-0" />
                 (407) 301-9979
               </a>
-              <a href="mailto:tutoring@futurefoundationsedu.com" className="flex items-center gap-3 text-brand-300 hover:text-white transition-colors">
+              <a href="mailto:info@futurefoundationsedu.com" className="flex items-center gap-3 text-brand-300 hover:text-white transition-colors">
                 <Mail className="w-5 h-5 text-brand-400 flex-shrink-0" />
-                <span className="break-all">tutoring@futurefoundationsedu.com</span>
+                <span className="break-all">info@futurefoundationsedu.com</span>
               </a>
             </div>
           </div>
