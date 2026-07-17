@@ -11,6 +11,7 @@ import HomeschoolPlansPage from './pages/HomeschoolPlansPage';
 import ProgramsPage from './pages/ProgramsPage';
 import TuitionEnrollmentPage from './pages/TuitionEnrollmentPage';
 import AssessmentsPage from './pages/AssessmentsPage';
+import CareersPage from './pages/CareersPage';
 import QuestionnaireModal from './components/QuestionnaireModal';
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/programs" element={<ProgramsPage />} />
               <Route path="/tuition-enrollment" element={<TuitionEnrollmentPage />} />
               <Route path="/assessments" element={<AssessmentsPage />} />
+              <Route path="/careers" element={<CareersPage />} />
             </Routes>
           </main>
           <Footer />

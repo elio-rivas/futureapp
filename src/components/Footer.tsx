@@ -71,8 +71,12 @@ export default function Footer() {
             <h4 className="font-bold text-lg mb-5">{t.footer.quickLinks}</h4>
             <nav className="flex flex-col gap-3">
               <Link to="/" className="text-brand-300 hover:text-white transition-colors">{t.nav.home}</Link>
-              <Link to="/summer-program" className="text-brand-300 hover:text-white transition-colors">{t.nav.summerProgram}</Link>
-              <Link to="/homeschool-plans" className="text-brand-300 hover:text-white transition-colors">{t.nav.services}</Link>
+              {t.nav.programItems.map((item) => (
+                <Link key={item.href} to={item.href} className="text-brand-300 hover:text-white transition-colors">
+                  {item.label}
+                </Link>
+              ))}
+              <Link to="/careers" className="text-brand-300 hover:text-white transition-colors">{t.nav.careers}</Link>
               <Link to="/about" className="text-brand-300 hover:text-white transition-colors">{t.nav.about}</Link>
               <Link to="/contact" className="text-brand-300 hover:text-white transition-colors">{t.nav.contact}</Link>
             </nav>

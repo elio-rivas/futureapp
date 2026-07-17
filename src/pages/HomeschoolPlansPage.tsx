@@ -50,13 +50,13 @@ export default function HomeschoolPlansPage() {
               </div>
             </div>
 
-            <div className="hidden lg:flex items-end justify-center">
+            <div className="hidden lg:flex items-center justify-center">
               <div
                 className="relative overflow-hidden shadow-xl"
                 style={{
-                  width: '420px',
-                  height: '380px',
-                  borderRadius: '50% 50% 48% 48%',
+                  width: '480px',
+                  height: '440px',
+                  borderRadius: '240px 240px 200px 200px',
                   border: '6px solid #e8e0d4',
                 }}
               >
@@ -64,7 +64,7 @@ export default function HomeschoolPlansPage() {
                   src={TUITION_IMAGE}
                   alt="Tutor working with student"
                   className="absolute inset-0 w-full h-full object-cover"
-                  style={{ objectPosition: 'center 18%' }}
+                  style={{ objectPosition: 'center 30%' }}
                 />
               </div>
             </div>

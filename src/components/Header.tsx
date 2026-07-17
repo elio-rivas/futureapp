@@ -15,6 +15,7 @@ const navLinks = [
   { key: 'services' as const, href: '/homeschool-plans' },
   { key: 'payment' as const, href: '/tuition-enrollment' },
   { key: 'about' as const, href: '/about' },
+  { key: 'careers' as const, href: '/careers' },
   { key: 'contact' as const, href: '/contact' },
 ];
 
