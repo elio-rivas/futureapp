@@ -120,18 +120,9 @@ export default function CareersPage() {
                   {c.applyTitle}
                 </h4>
                 <p className="text-brand-700 text-sm leading-relaxed mb-4">{c.applyDesc}</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <a
-                    href={`mailto:${c.applyEmail}?subject=Job Application: ${encodeURIComponent(c.jobTitle)}`}
-                    className="inline-flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all hover:shadow-lg"
-                  >
-                    <Mail className="w-5 h-5" />
-                    {c.applyButton}
-                  </a>
-                  <span className="inline-flex items-center gap-2 text-sm text-brand-600 font-medium">
-                    <Mail className="w-4 h-4 text-accent-500" />
-                    {c.applyEmail}
-                  </span>
+                <div className="flex items-center gap-2 text-sm text-brand-600 font-medium">
+                  <Mail className="w-4 h-4 text-accent-500" />
+                  {c.applyEmail}
                 </div>
               </div>
             </div>

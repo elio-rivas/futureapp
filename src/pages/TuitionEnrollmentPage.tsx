@@ -7,8 +7,6 @@ import {
 import { useLanguage } from '../i18n/LanguageContext';
 import { openLeadModal } from '../lib/leadModalStore';
 
-const HERO_IMAGE = '/images/tuition/Screenshot_2026-07-15_at_9.39.32_AM.png';
-
 const enrollmentIcons = [MessageSquare, ClipboardList, TrendingUp, FileText, GraduationCap];
 const trustIcons = [Users, Heart, BarChart2, Users];
 
@@ -29,46 +27,23 @@ export default function TuitionEnrollmentPage() {
       {/* ── 1. HERO ─────────────────────────────────────────────── */}
       <section className="pt-[68px] bg-[#f5f1ec] overflow-hidden">
         <div className="max-w-screen-xl mx-auto px-8 2xl:px-16">
-          <div className="grid lg:grid-cols-2 items-center min-h-[440px]">
-
-            {/* Left — text */}
-            <div className="py-12 lg:py-16 pr-8">
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-900 leading-tight mb-4">
-                {p.heroTitle}
-              </h1>
-              <p className="text-accent-500 font-display italic text-xl mb-5 leading-snug">
-                {p.heroSubtitle}
-              </p>
-              <p className="text-brand-600 text-base leading-relaxed mb-8 max-w-sm">
-                {p.heroDesc}
-              </p>
-              <button
-                onClick={() => openLeadModal()}
-                className="inline-flex items-center gap-2.5 bg-brand-900 hover:bg-brand-800 text-white px-7 py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all hover:shadow-lg"
-              >
-                <Calendar className="w-4 h-4" />
-                {p.heroButton}
-              </button>
-            </div>
-
-            {/* Right — stadium/pill shaped image (large radius on left side) */}
-            <div className="hidden lg:flex items-center justify-end py-12">
-              <div
-                className="relative overflow-hidden shadow-lg"
-                style={{
-                  width: '500px',
-                  height: '340px',
-                  borderRadius: '170px 20px 20px 170px',
-                }}
-              >
-                <img
-                  src={HERO_IMAGE}
-                  alt="Teacher and student working together"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  style={{ objectPosition: 'center 20%' }}
-                />
-              </div>
-            </div>
+          <div className="flex flex-col items-center text-center py-16 lg:py-20">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-900 leading-tight mb-4">
+              {p.heroTitle}
+            </h1>
+            <p className="text-accent-500 font-display italic text-xl mb-5 leading-snug">
+              {p.heroSubtitle}
+            </p>
+            <p className="text-brand-600 text-base leading-relaxed mb-8 max-w-2xl">
+              {p.heroDesc}
+            </p>
+            <button
+              onClick={() => openLeadModal()}
+              className="inline-flex items-center gap-2.5 bg-brand-900 hover:bg-brand-800 text-white px-7 py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all hover:shadow-lg"
+            >
+              <Calendar className="w-4 h-4" />
+              {p.heroButton}
+            </button>
           </div>
         </div>
       </section>

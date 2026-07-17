@@ -547,7 +547,7 @@ export const translations = {
       ],
       applyTitle: 'How to Apply',
       applyDesc: 'Send your resume and a brief cover letter describing your teaching philosophy and the subjects you are qualified to teach.',
-      applyEmail: 'careers@futurefoundationsedu.com',
+      applyEmail: 'recruitment@futurefoundationsedu.com',
       applyButton: 'Apply Now',
     },
     contactPage: {
@@ -1592,7 +1592,7 @@ export const translations = {
       ],
       applyTitle: 'Cómo Postularse',
       applyDesc: 'Envía tu currículum y una breve carta de presentación describiendo tu filosofía de enseñanza y las materias que estás calificado para enseñar.',
-      applyEmail: 'careers@futurefoundationsedu.com',
+      applyEmail: 'recruitment@futurefoundationsedu.com',
       applyButton: 'Postular Ahora',
     },
     contactPage: {
