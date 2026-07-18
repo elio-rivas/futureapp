@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { submitLead } from '../lib/supabase';
+import { trackGenerateLead, trackFormSubmit, trackJotformSubmit } from '../lib/analytics';
 
 const RATE_LIMIT_KEY = 'lead_form_last_submit';
 const RATE_LIMIT_MS = 60_000;
@@ -45,6 +46,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
     } catch { /* localStorage unavailable */ }
 
     setStatus('submitting');
+    trackFormSubmit(source, source);
 
     try {
       await submitLead({
@@ -54,6 +56,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
         form_rendered_at: renderedAt.current,
       });
       setStatus('success');
+      trackGenerateLead({ source, service: formData.interested_service });
       try { localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString()); } catch { /* noop */ }
       onSuccess?.();
     } catch {

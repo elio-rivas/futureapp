@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
+import { trackPhoneClick, trackEmailClick, trackOutboundLinkClick } from '../lib/analytics';
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -41,6 +42,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackOutboundLinkClick('https://facebook.com', 'footer_social')}
                 className="w-10 h-10 rounded-lg bg-brand-800 hover:bg-brand-700 flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
@@ -50,6 +52,7 @@ export default function Footer() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackOutboundLinkClick('https://instagram.com', 'footer_social')}
                 className="w-10 h-10 rounded-lg bg-brand-800 hover:bg-brand-700 flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
@@ -59,6 +62,7 @@ export default function Footer() {
                 href="https://tiktok.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackOutboundLinkClick('https://tiktok.com', 'footer_social')}
                 className="w-10 h-10 rounded-lg bg-brand-800 hover:bg-brand-700 flex items-center justify-center transition-colors"
                 aria-label="TikTok"
               >
@@ -92,11 +96,11 @@ export default function Footer() {
                   <p>Kissimmee, FL 34744</p>
                 </div>
               </div>
-              <a href="tel:4073019979" className="flex items-center gap-3 text-brand-300 hover:text-white transition-colors">
+              <a href="tel:4073019979" onClick={() => trackPhoneClick('4073019979', 'footer')} className="flex items-center gap-3 text-brand-300 hover:text-white transition-colors">
                 <Phone className="w-5 h-5 text-brand-400 flex-shrink-0" />
                 (407) 301-9979
               </a>
-              <a href="mailto:info@futurefoundationsedu.com" className="flex items-center gap-3 text-brand-300 hover:text-white transition-colors">
+              <a href="mailto:info@futurefoundationsedu.com" onClick={() => trackEmailClick('info@futurefoundationsedu.com', 'footer')} className="flex items-center gap-3 text-brand-300 hover:text-white transition-colors">
                 <Mail className="w-5 h-5 text-brand-400 flex-shrink-0" />
                 <span className="break-all">info@futurefoundationsedu.com</span>
               </a>

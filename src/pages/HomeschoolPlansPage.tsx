@@ -156,18 +156,6 @@ export default function HomeschoolPlansPage() {
                     <h3 className="font-display font-bold text-xl text-brand-900 mb-1">{plan.name}</h3>
                     <p className="text-accent-600 font-display italic text-sm mb-4">{plan.tagline}</p>
 
-                    {/* Price block */}
-                    <div className="bg-warm-50 rounded-xl p-4 mb-5 border border-warm-100">
-                      <div className="mb-3">
-                        <p className="text-xs uppercase tracking-wider text-brand-500 mb-0.5">Annual Investment</p>
-                        <p className="font-display font-bold text-3xl text-brand-900">{plan.annual}</p>
-                      </div>
-                      <div className="pt-3 border-t border-warm-200">
-                        <p className="text-xs uppercase tracking-wider text-brand-500 mb-0.5">Initial Enrollment</p>
-                        <p className="font-bold text-lg text-brand-800">{plan.registration}</p>
-                      </div>
-                    </div>
-
                     <p className="text-brand-600 text-sm leading-relaxed mb-4">{plan.description}</p>
 
                     {/* Features */}

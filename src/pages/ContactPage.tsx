@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { submitLead } from '../lib/supabase';
 import { openLeadModal } from '../lib/leadModalStore';
+import { trackPhoneClick, trackEmailClick, trackScheduleConsultation } from '../lib/analytics';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const LOGO_URL =
@@ -511,11 +512,11 @@ export default function ContactPage() {
               {/* Quick contact card */}
               <div className="bg-warm-50 border border-warm-200 rounded-2xl p-6 space-y-3">
                 <h4 className="font-bold text-brand-900 text-sm uppercase tracking-wider mb-3">{c.quickContact}</h4>
-                <a href="tel:4073019979" className="flex items-center gap-3 text-sm text-brand-700 hover:text-brand-900 transition-colors group">
+                <a href="tel:4073019979" onClick={() => trackPhoneClick('4073019979', 'contact_page')} className="flex items-center gap-3 text-sm text-brand-700 hover:text-brand-900 transition-colors group">
                   <Phone className="w-4 h-4 text-accent-500 group-hover:text-accent-600" />
                   (407) 301-9979
                 </a>
-                <a href="mailto:info@futurefoundationsedu.com" className="flex items-center gap-3 text-sm text-brand-700 hover:text-brand-900 transition-colors group break-all">
+                <a href="mailto:info@futurefoundationsedu.com" onClick={() => trackEmailClick('info@futurefoundationsedu.com', 'contact_page')} className="flex items-center gap-3 text-sm text-brand-700 hover:text-brand-900 transition-colors group break-all">
                   <Mail className="w-4 h-4 text-accent-500 flex-shrink-0 group-hover:text-accent-600" />
                   info@futurefoundationsedu.com
                 </a>
@@ -548,10 +549,13 @@ export default function ContactPage() {
             </div>
             <div className="flex flex-col items-center gap-5 flex-shrink-0">
               <button
-                onClick={() => openLeadModal({
-                  defaultService: 'Appointment request',
-                  defaultMessage: 'I am interested in an appointment.',
-                })}
+                onClick={() => {
+                  trackScheduleConsultation('contact_page_cta');
+                  openLeadModal({
+                    defaultService: 'Appointment request',
+                    defaultMessage: 'I am interested in an appointment.',
+                  });
+                }}
                 className="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-400 text-white px-10 py-4 rounded-xl font-bold text-lg uppercase tracking-widest transition-all hover:shadow-xl"
               >
                 <Calendar className="w-5 h-5" />
