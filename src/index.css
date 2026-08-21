@@ -18,6 +18,28 @@
   .container-max {
     @apply max-w-7xl mx-auto;
   }
+
+  /* Compact spacing for the mobile-first, shareable parent form only. */
+  .questionnaire-compact .mb-4 {
+    @apply mb-2;
+  }
+  .questionnaire-compact .mb-6 {
+    @apply mb-3;
+  }
+  .questionnaire-compact .gap-4 {
+    @apply gap-2;
+  }
+  .questionnaire-compact label {
+    @apply mb-1 text-xs;
+  }
+  .questionnaire-compact input,
+  .questionnaire-compact select,
+  .questionnaire-compact textarea {
+    @apply px-3 py-2 text-sm;
+  }
+  .questionnaire-compact button[type='submit'] {
+    @apply py-2.5 text-base;
+  }
 }
 
 @layer utilities {
