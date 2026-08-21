@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { submitLead } from '../lib/supabase';
-import { trackGenerateLead, trackFormSubmit } from '../lib/analytics';
+import { trackGenerateLead, trackFormSubmit, trackJotformSubmit } from '../lib/analytics';
 
 const RATE_LIMIT_KEY = 'lead_form_last_submit';
 const RATE_LIMIT_MS = 60_000;
@@ -12,12 +12,10 @@ interface QuestionnaireFormProps {
   defaultService?: string;
   defaultMessage?: string;
   onSuccess?: () => void;
-  showEnrollmentCta?: boolean;
-  compact?: boolean;
 }
 
-export function QuestionnaireForm({ source = 'summer_questionnaire', defaultService = '', defaultMessage = '', onSuccess, showEnrollmentCta = true, compact = false }: QuestionnaireFormProps) {
-  const { locale, t } = useLanguage();
+export function QuestionnaireForm({ source = 'summer_questionnaire', defaultService = '', defaultMessage = '', onSuccess }: QuestionnaireFormProps) {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     parent_name: '',
     phone: '',
@@ -76,26 +74,24 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
         <p className="text-brand-600 leading-relaxed mb-6">
           {t.questionnaire.successMessage}
         </p>
-        {showEnrollmentCta && (
-          <div className="bg-warm-50 border border-warm-200 rounded-xl p-5">
-            <p className="text-brand-600 text-sm mb-3">{t.questionnaire.successCtaNote}</p>
-            <a
-              href="https://form.jotform.com/261240438813049"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-5 py-3 rounded-xl font-bold transition-all hover:shadow-lg"
-            >
-              {t.questionnaire.successCta}
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
-        )}
+        <div className="bg-warm-50 border border-warm-200 rounded-xl p-5">
+          <p className="text-brand-600 text-sm mb-3">{t.questionnaire.successCtaNote}</p>
+          <a
+            href="https://form.jotform.com/261240438813049"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-5 py-3 rounded-xl font-bold transition-all hover:shadow-lg"
+          >
+            {t.questionnaire.successCta}
+            <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className={compact ? 'questionnaire-compact' : undefined}>
+    <form onSubmit={handleSubmit}>
       {/* Honeypot -- invisible to real users, bots fill it */}
       <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, height: 0, overflow: 'hidden' }}>
         <label htmlFor={`${source}-website`}>Website</label>
@@ -208,7 +204,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
         </label>
         <textarea
           id={`${source}-message`}
-          rows={compact ? 2 : 3}
+          rows={3}
           placeholder={t.questionnaire.messagePlaceholder}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -217,11 +213,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
       </div>
 
       {status === 'error' && (
-        <p className="text-error-600 text-sm mb-4 font-medium">
-          {locale === 'es'
-            ? 'Algo salió mal. Inténtalo de nuevo o llámanos directamente.'
-            : 'Something went wrong. Please try again or call us directly.'}
-        </p>
+        <p className="text-error-600 text-sm mb-4 font-medium">Something went wrong. Please try again or call us directly.</p>
       )}
 
       <button
