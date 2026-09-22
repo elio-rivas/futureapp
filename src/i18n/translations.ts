@@ -1,3 +1,65 @@
+const targetedReadingEN = {
+  "id": "targeted-reading",
+  "title": "Targeted Reading Support",
+  "tag": "NEW • GRADES K–2",
+  "subtitle": "Short, focused reading instruction twice weekly for early elementary students who need practice, reinforcement, and confidence.",
+  "summary": "Short, focused sessions for early elementary students who need additional practice in specific early reading skills.",
+  "description": "Designed especially for kindergarten through second grade, this focused service gives early elementary students professional reading support without requiring a large comprehensive program. A brief skills screening identifies the child’s starting point, and instruction is then personalized, monitored, and adjusted as progress develops.",
+  "highlights": [
+    "Two focused 30-minute sessions each week",
+    "Individualized early reading instruction",
+    "Support with phonemic awareness, phonics, decoding, fluency, and comprehension",
+    "Instruction based on the child’s current reading needs",
+    "Consistent weekly schedule to support meaningful progress",
+    "Ongoing progress monitoring",
+    "Clear parent communication",
+    "Recommendations for additional intervention when appropriate"
+  ],
+  "infoCards": [
+    {
+      "label": "Schedule",
+      "value": "2 × 30 minutes weekly"
+    },
+    {
+      "label": "Enrollment",
+      "value": "No registration fee"
+    }
+  ],
+  "screening": "An initial Reading Skills Screening helps identify your child’s starting point and determines whether targeted support or more intensive reading intervention is recommended.",
+  "imageAlt": "Educator providing individualized reading support to a young learner"
+};
+
+const targetedReadingES = {
+  "id": "targeted-reading",
+  "title": "Apoyo de Lectura Dirigido",
+  "tag": "NUEVO • GRADOS K–2",
+  "subtitle": "Instrucción breve y enfocada en lectura, dos veces por semana, para estudiantes de primaria temprana que necesitan práctica, refuerzo y mayor confianza.",
+  "summary": "Sesiones breves y enfocadas para estudiantes de primaria temprana que necesitan práctica adicional en destrezas específicas de lectura inicial.",
+  "description": "Diseñado especialmente para estudiantes de kindergarten a segundo grado, este servicio ofrece apoyo profesional en lectura a estudiantes de primaria temprana sin requerir un programa integral de mayor alcance. Una breve evaluación de destrezas permite identificar el punto de partida del estudiante. A partir de los resultados, la instrucción se personaliza, se monitorea y se ajusta de acuerdo con su progreso.",
+  "highlights": [
+    "Dos sesiones enfocadas de 30 minutos cada semana",
+    "Instrucción individualizada en lectura inicial",
+    "Apoyo en conciencia fonológica, fonética, decodificación, fluidez y comprensión",
+    "Instrucción basada en las necesidades actuales de lectura del estudiante",
+    "Horario semanal consistente para apoyar un progreso significativo",
+    "Monitoreo continuo del progreso",
+    "Comunicación clara con los padres",
+    "Recomendaciones de intervención adicional cuando sea apropiado"
+  ],
+  "infoCards": [
+    {
+      "label": "Horario",
+      "value": "2 × 30 minutos por semana"
+    },
+    {
+      "label": "Inscripción",
+      "value": "Sin cargo de inscripción"
+    }
+  ],
+  "screening": "Una Evaluación Inicial de Destrezas de Lectura ayuda a identificar el punto de partida del estudiante y permite determinar si necesita apoyo específico o una intervención de lectura más intensiva.",
+  "imageAlt": "Educador brindando apoyo individualizado en lectura a un estudiante pequeño"
+};
+
 export type Locale = 'en' | 'es';
 
 export const translations = {
@@ -14,6 +76,7 @@ export const translations = {
       scheduleConsultation: 'Schedule a Consultation',
       careers: 'Careers',
       programItems: [
+        { label: targetedReadingEN.title, href: '/programs#targeted-reading' },
         { label: 'Early Learners (Pre-K)', href: '/programs#early-learners' },
         { label: 'Elementary School', href: '/programs#elementary' },
         { label: 'Students with Unique Learning Needs', href: '/programs#unique-needs' },
@@ -56,6 +119,7 @@ export const translations = {
       interestedService: 'Interested In',
       serviceOptions: [
         'Early Learners',
+        targetedReadingEN.title,
         'Elementary School',
         'Unique Learning Needs',
         'Homeschool Students',
@@ -626,7 +690,7 @@ export const translations = {
       ctaFeature2: 'Evidence-Based Instruction',
       ctaFeature3: 'Family-Centered Support',
       grades: ['Pre-K', 'Kindergarten', '1st Grade', '2nd Grade', '3rd Grade', '4th Grade', '5th Grade', '6th Grade', '7th Grade', '8th Grade', '9th Grade', '10th Grade', '11th Grade', '12th Grade', 'Other'],
-      programs: ['Pre-K Readiness', 'Elementary Reading', 'Students with Unique Learning Needs', 'Homeschool Students', 'SAT / Test Prep', 'Academic Enrichment'],
+      programs: [targetedReadingEN.title, 'Pre-K Readiness', 'Elementary Reading', 'Students with Unique Learning Needs', 'Homeschool Students', 'SAT / Test Prep', 'Academic Enrichment'],
       contactMethods: ['Text Message', 'Email', 'Phone Call', 'WhatsApp'],
       helpTopics: [
         'Enrollment', 'Academic Assessment', 'Scheduling a Consultation', 'Program Information', 'Tuition & Payment', 'Other',
@@ -638,6 +702,7 @@ export const translations = {
       titleLine2: 'For Your Child',
       viewProgram: 'View Program',
       items: [
+        targetedReadingEN,
         {
           title: 'Early Learners',
           subtitle: 'Pre-K foundation building through play-based literacy and numeracy.',
@@ -667,6 +732,7 @@ export const translations = {
       viewProgram: 'View Program',
       inquireBtn: 'Inquire About This Program',
       programs: [
+        targetedReadingEN,
         {
           id: 'early-learners',
           title: 'Early Learners (Pre-K)',
@@ -1058,6 +1124,7 @@ export const translations = {
       scheduleConsultation: 'Agendar Consulta',
       careers: 'Empleo',
       programItems: [
+        { label: targetedReadingES.title, href: '/programs#targeted-reading' },
         { label: 'Aprendices Tempranos (Pre-K)', href: '/programs#early-learners' },
         { label: 'Escuela Primaria', href: '/programs#elementary' },
         { label: 'Estudiantes con Necesidades Únicas', href: '/programs#unique-needs' },
@@ -1100,6 +1167,7 @@ export const translations = {
       interestedService: 'Interesado En',
       serviceOptions: [
         'Early Learners',
+        targetedReadingES.title,
         'Elementary School',
         'Unique Learning Needs',
         'Homeschool Students',
@@ -1670,7 +1738,7 @@ export const translations = {
       ctaFeature2: 'Instrucción Basada en Evidencia',
       ctaFeature3: 'Apoyo Centrado en la Familia',
       grades: ['Pre-K', 'Kínder', '1er Grado', '2do Grado', '3er Grado', '4to Grado', '5to Grado', '6to Grado', '7mo Grado', '8vo Grado', '9no Grado', '10mo Grado', '11vo Grado', '12vo Grado', 'Otro'],
-      programs: ['Preparación Pre-K', 'Lectura Elemental', 'Estudiantes con Necesidades de Aprendizaje Únicas', 'Estudiantes de Educación en Casa', 'Preparación SAT / Exámenes', 'Enriquecimiento Académico'],
+      programs: [targetedReadingES.title, 'Preparación Pre-K', 'Lectura Elemental', 'Estudiantes con Necesidades de Aprendizaje Únicas', 'Estudiantes de Educación en Casa', 'Preparación SAT / Exámenes', 'Enriquecimiento Académico'],
       contactMethods: ['Mensaje de Texto', 'Correo Electrónico', 'Llamada Telefónica', 'WhatsApp'],
       helpTopics: [
         'Inscripción', 'Evaluación Académica', 'Programar una Consulta', 'Información del Programa', 'Matrícula y Pago', 'Otro',
@@ -1682,6 +1750,7 @@ export const translations = {
       titleLine2: 'Para Tu Hijo',
       viewProgram: 'Ver Programa',
       items: [
+        targetedReadingES,
         {
           title: 'Primeros Aprendices',
           subtitle: 'Fundamentos de Pre-K a través de lectoescritura y numeracia basadas en el juego.',
@@ -1711,6 +1780,7 @@ export const translations = {
       viewProgram: 'Ver Programa',
       inquireBtn: 'Consultar Sobre Este Programa',
       programs: [
+        targetedReadingES,
         {
           id: 'early-learners',
           title: 'Aprendices Tempranos (Pre-K)',

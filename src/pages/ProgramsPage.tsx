@@ -1,3 +1,4 @@
+import { targetedReading } from '../lib/targetedReading';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CheckCircle, ArrowRight } from 'lucide-react';
@@ -5,6 +6,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { openLeadModal } from '../lib/leadModalStore';
 
 const PROGRAM_IMAGES: Record<string, string> = {
+  [targetedReading.id]: targetedReading.image,
   'early-learners':
     'https://images.pexels.com/photos/8612992/pexels-photo-8612992.jpeg?auto=compress&cs=tinysrgb&w=900&h=700&fit=crop',
   elementary:
@@ -16,6 +18,7 @@ const PROGRAM_IMAGES: Record<string, string> = {
 };
 
 const PROGRAM_ACCENTS: Record<string, string> = {
+  [targetedReading.id]: targetedReading.accent,
   'early-learners': '#16a34a',
   elementary: '#486581',
   'unique-needs': '#b44d12',
@@ -31,7 +34,11 @@ export default function ProgramsPage() {
     if (location.hash) {
       const el = document.getElementById(location.hash.slice(1));
       if (el) {
-        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        const timer = setTimeout(() => {
+          el.focus({ preventScroll: true });
+          el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+        }, 100);
+        return () => clearTimeout(timer);
       }
     }
   }, [location.hash]);
@@ -79,6 +86,8 @@ export default function ProgramsPage() {
           <section
             key={program.id}
             id={program.id}
+            tabIndex={-1}
+            aria-labelledby={`${program.id}-title`}
             className={`section-padding scroll-mt-24 ${isEven ? 'bg-white' : 'bg-warm-50'}`}
           >
             <div className="container-max">
@@ -88,13 +97,14 @@ export default function ProgramsPage() {
                   <div className="relative overflow-hidden rounded-2xl shadow-xl">
                     <img
                       src={PROGRAM_IMAGES[program.id]}
-                      alt={program.title}
+                      alt={'imageAlt' in program ? program.imageAlt : program.title}
                       className="w-full h-72 sm:h-80 object-cover"
+                      style={{ objectPosition: program.id === targetedReading.id ? 'center 65%' : undefined }}
                       loading="lazy"
                     />
                     <div
                       className="absolute bottom-0 left-0 right-0 h-1.5"
-                      style={{ background: accent }}
+                      style={{ background: accent, color: program.id === targetedReading.id ? '#102a43' : undefined }}
                     />
                   </div>
                 </div>
@@ -103,11 +113,11 @@ export default function ProgramsPage() {
                 <div className={`order-2 ${isEven ? '' : 'lg:order-1'}`}>
                   <span
                     className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4"
-                    style={{ background: `${accent}20`, color: accent }}
+                    style={{ background: `${accent}20`, color: program.id === targetedReading.id ? '#8d2b0b' : accent }}
                   >
                     {program.tag}
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-brand-900 mb-4 leading-tight">
+                  <h2 id={`${program.id}-title`} className="font-display text-2xl sm:text-3xl font-bold text-brand-900 mb-4 leading-tight">
                     {program.title}
                   </h2>
                   <p className="text-brand-600 text-base leading-relaxed mb-3 font-medium">
@@ -116,21 +126,36 @@ export default function ProgramsPage() {
                   <p className="text-brand-600 text-base leading-relaxed mb-6">
                     {program.description}
                   </p>
+                  {'infoCards' in program && (
+                    <dl className="grid sm:grid-cols-2 gap-4 mb-6">
+                      {program.infoCards.map((card) => (
+                        <div key={card.label} className="rounded-xl border border-warm-200 bg-warm-50 p-4">
+                          <dt className="text-sm text-brand-600 mb-1">{card.label}</dt>
+                          <dd className="font-semibold text-brand-900">{card.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
                   <ul className="space-y-2.5 mb-8">
                     {program.highlights.map((highlight) => (
                       <li key={highlight} className="flex items-start gap-3">
                         <CheckCircle
                           className="w-5 h-5 flex-shrink-0 mt-0.5"
-                          style={{ color: accent }}
+                          style={{ color: program.id === targetedReading.id ? '#8d2b0b' : accent }}
                         />
                         <span className="text-brand-700 text-sm leading-snug">{highlight}</span>
                       </li>
                     ))}
                   </ul>
+                  {'screening' in program && (
+                    <p className="rounded-xl border-l-4 border-accent-500 bg-brand-50 p-5 text-sm leading-relaxed text-brand-700 mb-6">
+                      {program.screening}
+                    </p>
+                  )}
                   <button
                     onClick={() => openLeadModal({ defaultService: program.title })}
                     className="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all hover:shadow-lg hover:-translate-y-0.5"
-                    style={{ background: accent }}
+                    style={{ background: accent, color: program.id === targetedReading.id ? '#102a43' : undefined }}
                   >
                     {p.inquireBtn}
                     <ArrowRight className="w-4 h-4" />

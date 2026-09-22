@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { targetedReading } from '../lib/targetedReading';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const SERVICE_META = [
+  targetedReading,
   {
     id: 'early-learners',
     image: 'https://images.pexels.com/photos/8612992/pexels-photo-8612992.jpeg?auto=compress&cs=tinysrgb&w=900&h=700&fit=crop',
@@ -50,6 +52,7 @@ export default function ServicesCarousel() {
 
   const startAutoplay = useCallback(() => {
     stopAutoplay();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     autoplayRef.current = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % SERVICE_META.length);
     }, AUTOPLAY_INTERVAL);
@@ -79,6 +82,12 @@ export default function ServicesCarousel() {
   return (
     <section
       className="px-4 sm:px-6 lg:px-8 py-16 md:py-24 pt-32 md:pt-36 relative overflow-hidden"
+      onMouseEnter={stopAutoplay}
+      onMouseLeave={startAutoplay}
+      onFocusCapture={stopAutoplay}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) startAutoplay();
+      }}
       style={{ background: '#ffffff' }}
     >
       <div
@@ -91,13 +100,13 @@ export default function ServicesCarousel() {
         <div className="text-center mb-12">
           <span
             className="inline-block font-semibold text-sm tracking-wider uppercase mb-3"
-            style={{ color: activeMeta.accent }}
+            style={{ color: activeMeta.id === targetedReading.id ? '#8d2b0b' : activeMeta.accent }}
           >
             {sc.sectionLabel}
           </span>
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-brand-900 leading-tight">
             {sc.titleLine1}{' '}
-            <span style={{ color: activeMeta.accent }} className="transition-colors duration-500">
+            <span style={{ color: activeMeta.id === targetedReading.id ? '#8d2b0b' : activeMeta.accent }} className="transition-colors duration-500">
               {sc.titleLine2}
             </span>
           </h2>
@@ -132,13 +141,14 @@ export default function ServicesCarousel() {
                 {/* Background image */}
                 <img
                   src={meta.image}
-                  alt={item.title}
+                  alt={'imageAlt' in item ? item.imageAlt : item.title}
                   className={[
                     'absolute inset-0 w-full h-full object-cover',
                     'transition-transform duration-[800ms] ease-out',
                     isActive ? 'scale-100' : 'scale-110',
                   ].join(' ')}
-                  loading="lazy"
+                  style={{ objectPosition: meta.id === targetedReading.id ? 'center 65%' : undefined }}
+                  loading={index === 0 ? 'eager' : 'lazy'}
                   draggable={false}
                 />
 
@@ -180,7 +190,7 @@ export default function ServicesCarousel() {
                 {/* Expanded content */}
                 <div
                   className={[
-                    'absolute inset-0 flex flex-col justify-end p-6 sm:p-8',
+                    'absolute inset-0 flex flex-col justify-end p-3 sm:p-8',
                     'transition-all duration-500',
                     isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none',
                   ].join(' ')}
@@ -189,7 +199,7 @@ export default function ServicesCarousel() {
                     className="inline-flex items-center self-start px-3 py-1 rounded-full text-xs font-bold mb-3 tracking-wider uppercase"
                     style={{
                       background: `${meta.accent}35`,
-                      color: '#fff',
+                      color: meta.id === targetedReading.id ? '#f7c948' : '#fff',
                       border: `1px solid ${meta.accent}70`,
                     }}
                   >
@@ -206,7 +216,7 @@ export default function ServicesCarousel() {
 
                   <div
                     className="inline-flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-xl self-start transition-all duration-300 hover:gap-3 hover:brightness-110"
-                    style={{ background: meta.accent, color: '#fff' }}
+                    style={{ background: meta.accent, color: meta.id === targetedReading.id ? '#102a43' : '#fff' }}
                   >
                     {sc.viewProgram}
                     <ArrowRight className="w-4 h-4" />
@@ -225,7 +235,7 @@ export default function ServicesCarousel() {
                 key={index}
                 onClick={() => goTo(index)}
                 aria-label={`Go to slide ${index + 1}`}
-                className="rounded-full transition-all duration-300"
+                className="rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-800"
                 style={{
                   width: index === activeIndex ? '24px' : '8px',
                   height: '8px',
