@@ -1,62 +1,118 @@
 const targetedReadingEN = {
   "id": "targeted-reading",
-  "title": "Targeted Reading Support",
-  "tag": "NEW • GRADES K–2",
-  "subtitle": "Short, focused reading instruction twice weekly for early elementary students who need practice, reinforcement, and confidence.",
-  "summary": "Short, focused sessions for early elementary students who need additional practice in specific early reading skills.",
-  "description": "Designed especially for kindergarten through second grade, this focused service gives early elementary students professional reading support without requiring a large comprehensive program. A brief skills screening identifies the child’s starting point, and instruction is then personalized, monitored, and adjusted as progress develops.",
-  "highlights": [
-    "Two focused 30-minute sessions each week",
-    "Individualized early reading instruction",
-    "Support with phonemic awareness, phonics, decoding, fluency, and comprehension",
-    "Instruction based on the child’s current reading needs",
-    "Consistent weekly schedule to support meaningful progress",
-    "Ongoing progress monitoring",
-    "Clear parent communication",
-    "Recommendations for additional intervention when appropriate"
-  ],
+  "title": "After-School Reading and Math Tutoring",
+  "tag": "AFTER-SCHOOL · GRADES K–5",
+  "carouselTag": "GRADES K–5",
+  "viewProgram": "View Program",
+  "subtitle": "Personalized after-school reading and math tutoring for students in grades K–5. A consistent tutor, a plan for your child, and progress you can see.",
+  "tagline": "Focused Support. Real Progress.",
+  "summary": "Give your child the extra support they need to build reading and math skills with confidence.",
+  "description": "Our after-school tutoring program provides focused, personalized instruction in a welcoming learning environment. Students work with a consistent tutor and follow a learning plan designed around their individual needs and goals.",
   "infoCards": [
     {
-      "label": "Schedule",
-      "value": "2 × 30 minutes weekly"
+      "label": "Grades",
+      "value": "K–5"
     },
     {
-      "label": "Enrollment",
-      "value": "No registration fee"
+      "label": "Subjects",
+      "value": "Reading and Math"
+    },
+    {
+      "label": "Location",
+      "value": "Kissimmee, Florida"
+    },
+    {
+      "label": "Available hours",
+      "value": "Monday–Thursday, 3:30–6:30 PM"
     }
   ],
-  "screening": "An initial Reading Skills Screening helps identify your child’s starting point and determines whether targeted support or more intensive reading intervention is recommended.",
+  "optionsTitle": "Two ways to learn",
+  "options": [
+    {
+      "title": "One-on-One Tutoring",
+      "tagline": "One child. One tutor.",
+      "schedule": "Private 30-minute sessions, twice weekly.",
+      "description": "Your child receives individual attention and focused instruction at their own pace. Sessions are designed around their learning needs and academic goals."
+    },
+    {
+      "title": "Learning Pair",
+      "tagline": "Two students. One tutor.",
+      "schedule": "55-minute sessions, twice weekly.",
+      "description": "Students are matched by skill level while working toward their own learning goals. Each child receives personal attention in a supportive, small-group learning environment."
+    }
+  ],
+  "highlightsTitle": "What your child can expect",
+  "highlights": [
+    "Academic Learning Gains",
+    "Support in reading and math.",
+    "A consistent tutor.",
+    "A personalized learning plan.",
+    "Regular progress monitoring.",
+    "Clear communication with parents."
+  ],
+  "closingTitle": "Find Your Child's Best Fit",
+  "closingQuestion": "Not sure which tutoring option is right for your child?",
+  "closingDescription": "Contact our team to learn more about the program and available enrollment options.",
+  "inquireBtn": "Inquire About This Program",
   "imageAlt": "Educator providing individualized reading support to a young learner"
 };
 
 const targetedReadingES = {
   "id": "targeted-reading",
-  "title": "Apoyo de Lectura Dirigido",
-  "tag": "NUEVO • GRADOS K–2",
-  "subtitle": "Instrucción breve y enfocada en lectura, dos veces por semana, para estudiantes de primaria temprana que necesitan práctica, refuerzo y mayor confianza.",
-  "summary": "Sesiones breves y enfocadas para estudiantes de primaria temprana que necesitan práctica adicional en destrezas específicas de lectura inicial.",
-  "description": "Diseñado especialmente para estudiantes de kindergarten a segundo grado, este servicio ofrece apoyo profesional en lectura a estudiantes de primaria temprana sin requerir un programa integral de mayor alcance. Una breve evaluación de destrezas permite identificar el punto de partida del estudiante. A partir de los resultados, la instrucción se personaliza, se monitorea y se ajusta de acuerdo con su progreso.",
-  "highlights": [
-    "Dos sesiones enfocadas de 30 minutos cada semana",
-    "Instrucción individualizada en lectura inicial",
-    "Apoyo en conciencia fonológica, fonética, decodificación, fluidez y comprensión",
-    "Instrucción basada en las necesidades actuales de lectura del estudiante",
-    "Horario semanal consistente para apoyar un progreso significativo",
-    "Monitoreo continuo del progreso",
-    "Comunicación clara con los padres",
-    "Recomendaciones de intervención adicional cuando sea apropiado"
-  ],
+  "title": "Tutorías de lectura y matemáticas después de clases",
+  "tag": "DESPUÉS DE CLASES · GRADOS K–5",
+  "carouselTag": "GRADOS K–5",
+  "viewProgram": "Ver programa",
+  "subtitle": "Tutorías personalizadas de lectura y matemáticas después de clases para estudiantes de kínder a quinto grado. Un tutor constante, un plan para tu hijo y avances que puedes ver.",
+  "tagline": "Apoyo enfocado. Progreso real.",
+  "summary": "Dale a tu hijo el apoyo adicional que necesita para desarrollar sus habilidades de lectura y matemáticas con confianza.",
+  "description": "Nuestro programa de tutorías después de clases ofrece enseñanza personalizada en un ambiente acogedor. Los estudiantes trabajan con un tutor constante y siguen un plan de aprendizaje adaptado a sus necesidades y metas individuales.",
   "infoCards": [
     {
-      "label": "Horario",
-      "value": "2 × 30 minutos por semana"
+      "label": "Grados",
+      "value": "K–5"
     },
     {
-      "label": "Inscripción",
-      "value": "Sin cargo de inscripción"
+      "label": "Materias",
+      "value": "Lectura y matemáticas"
+    },
+    {
+      "label": "Ubicación",
+      "value": "Kissimmee, Florida"
+    },
+    {
+      "label": "Horario disponible",
+      "value": "Lunes a jueves, de 3:30 a 6:30 p. m."
     }
   ],
-  "screening": "Una Evaluación Inicial de Destrezas de Lectura ayuda a identificar el punto de partida del estudiante y permite determinar si necesita apoyo específico o una intervención de lectura más intensiva.",
+  "optionsTitle": "Dos modalidades de aprendizaje",
+  "options": [
+    {
+      "title": "Tutoría individual",
+      "tagline": "Un niño. Un tutor.",
+      "schedule": "Sesiones privadas de 30 minutos, dos veces por semana.",
+      "description": "Tu hijo recibe atención individual y enseñanza enfocada a su propio ritmo. Las sesiones se adaptan a sus necesidades de aprendizaje y metas académicas."
+    },
+    {
+      "title": "Aprendizaje en pareja",
+      "tagline": "Dos estudiantes. Un tutor.",
+      "schedule": "Sesiones de 55 minutos, dos veces por semana.",
+      "description": "Los estudiantes se agrupan según su nivel de habilidades y trabajan para alcanzar sus propias metas de aprendizaje. Cada niño recibe atención personalizada en un ambiente de aprendizaje colaborativo."
+    }
+  ],
+  "highlightsTitle": "Qué puede esperar tu hijo",
+  "highlights": [
+    "Avances en el aprendizaje académico",
+    "Apoyo en lectura y matemáticas.",
+    "Un tutor constante.",
+    "Un plan de aprendizaje personalizado.",
+    "Seguimiento periódico del progreso.",
+    "Comunicación clara con los padres."
+  ],
+  "closingTitle": "Encuentra la mejor opción para tu hijo",
+  "closingQuestion": "¿No sabes qué modalidad de tutoría es la adecuada para tu hijo?",
+  "closingDescription": "Comunícate con nuestro equipo para conocer el programa y las opciones de inscripción disponibles.",
+  "inquireBtn": "Solicitar información",
   "imageAlt": "Educador brindando apoyo individualizado en lectura a un estudiante pequeño"
 };
 

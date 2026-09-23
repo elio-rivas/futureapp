@@ -113,7 +113,7 @@ export default function ServicesCarousel() {
         </div>
 
         {/* Carousel panels */}
-        <div className="flex gap-2 sm:gap-3 h-[500px] sm:h-[540px] md:h-[560px] rounded-2xl overflow-hidden shadow-xl">
+        <div className={`flex gap-2 sm:gap-3 ${activeMeta.id === targetedReading.id ? 'min-h-[500px] sm:min-h-[540px] md:min-h-[560px]' : 'h-[500px] sm:h-[540px] md:h-[560px]'} rounded-2xl overflow-hidden shadow-xl`}>
           {SERVICE_META.map((meta, index) => {
             const isActive = index === activeIndex;
             const item = sc.items[index];
@@ -190,7 +190,9 @@ export default function ServicesCarousel() {
                 {/* Expanded content */}
                 <div
                   className={[
-                    'absolute inset-0 flex flex-col justify-end p-3 sm:p-8',
+                    isActive && meta.id === targetedReading.id
+                      ? 'relative min-h-[500px] sm:min-h-[540px] md:min-h-[560px] h-full flex flex-col justify-end p-3 sm:p-8'
+                      : 'absolute inset-0 flex flex-col justify-end p-3 sm:p-8',
                     'transition-all duration-500',
                     isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none',
                   ].join(' ')}
@@ -203,7 +205,7 @@ export default function ServicesCarousel() {
                       border: `1px solid ${meta.accent}70`,
                     }}
                   >
-                    {item.tag}
+                    {'carouselTag' in item ? item.carouselTag : item.tag}
                   </div>
 
                   <h3 className="font-display text-2xl sm:text-3xl font-bold text-white mb-3 leading-tight">
@@ -218,7 +220,7 @@ export default function ServicesCarousel() {
                     className="inline-flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-xl self-start transition-all duration-300 hover:gap-3 hover:brightness-110"
                     style={{ background: meta.accent, color: meta.id === targetedReading.id ? '#102a43' : '#fff' }}
                   >
-                    {sc.viewProgram}
+                    {'viewProgram' in item ? item.viewProgram : sc.viewProgram}
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>

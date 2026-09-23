@@ -91,7 +91,7 @@ export default function ProgramsPage() {
             className={`section-padding scroll-mt-24 ${isEven ? 'bg-white' : 'bg-warm-50'}`}
           >
             <div className="container-max">
-              <div className={`grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto ${isEven ? '' : 'lg:flex-row-reverse'}`}>
+              <div className={`grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto ${isEven ? '' : 'lg:flex-row-reverse'} ${program.id === targetedReading.id ? 'lg:items-start' : ''}`}>
                 {/* Image */}
                 <div className={`order-1 ${isEven ? '' : 'lg:order-2'}`}>
                   <div className="relative overflow-hidden rounded-2xl shadow-xl">
@@ -120,6 +120,9 @@ export default function ProgramsPage() {
                   <h2 id={`${program.id}-title`} className="font-display text-2xl sm:text-3xl font-bold text-brand-900 mb-4 leading-tight">
                     {program.title}
                   </h2>
+                  {'tagline' in program && (
+                    <p className="font-display text-xl font-bold text-brand-900 mb-4">{program.tagline}</p>
+                  )}
                   <p className="text-brand-600 text-base leading-relaxed mb-3 font-medium">
                     {program.summary}
                   </p>
@@ -136,6 +139,24 @@ export default function ProgramsPage() {
                       ))}
                     </dl>
                   )}
+                  {'options' in program && (
+                    <div className="mb-8">
+                      <h3 className="font-display text-xl font-bold text-brand-900 mb-4">{program.optionsTitle}</h3>
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        {program.options.map((option) => (
+                          <div key={option.title} className="rounded-xl border border-warm-200 bg-warm-50 p-5">
+                            <h4 className="font-display text-lg font-bold text-brand-900 mb-2">{option.title}</h4>
+                            <p className="font-semibold text-brand-800 mb-2">{option.tagline}</p>
+                            <p className="font-medium text-brand-700 text-sm mb-3">{option.schedule}</p>
+                            <p className="text-brand-600 text-sm leading-relaxed">{option.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {'highlightsTitle' in program && (
+                    <h3 className="font-display text-xl font-bold text-brand-900 mb-4">{program.highlightsTitle}</h3>
+                  )}
                   <ul className="space-y-2.5 mb-8">
                     {program.highlights.map((highlight) => (
                       <li key={highlight} className="flex items-start gap-3">
@@ -147,17 +168,19 @@ export default function ProgramsPage() {
                       </li>
                     ))}
                   </ul>
-                  {'screening' in program && (
-                    <p className="rounded-xl border-l-4 border-accent-500 bg-brand-50 p-5 text-sm leading-relaxed text-brand-700 mb-6">
-                      {program.screening}
-                    </p>
+                  {'closingTitle' in program && (
+                    <div className="rounded-xl border-l-4 border-accent-500 bg-brand-50 p-5 text-sm leading-relaxed text-brand-700 mb-6">
+                      <h3 className="font-display text-xl font-bold text-brand-900 mb-3">{program.closingTitle}</h3>
+                      <p className="mb-2">{program.closingQuestion}</p>
+                      <p>{program.closingDescription}</p>
+                    </div>
                   )}
                   <button
                     onClick={() => openLeadModal({ defaultService: program.title })}
                     className="inline-flex items-center gap-2 text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all hover:shadow-lg hover:-translate-y-0.5"
                     style={{ background: accent, color: program.id === targetedReading.id ? '#102a43' : undefined }}
                   >
-                    {p.inquireBtn}
+                    {'inquireBtn' in program ? program.inquireBtn : p.inquireBtn}
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
