@@ -43,7 +43,7 @@ const targetedReadingEN = {
   ],
   "highlightsTitle": "What your child can expect",
   "highlights": [
-    "Academic Learning Gains",
+    "Academic learning gains.",
     "Support in reading and math.",
     "A consistent tutor.",
     "A personalized learning plan.",
@@ -102,7 +102,7 @@ const targetedReadingES = {
   ],
   "highlightsTitle": "Qué puede esperar tu hijo",
   "highlights": [
-    "Avances en el aprendizaje académico",
+    "Avances en el aprendizaje académico.",
     "Apoyo en lectura y matemáticas.",
     "Un tutor constante.",
     "Un plan de aprendizaje personalizado.",
