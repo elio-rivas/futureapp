@@ -161,7 +161,7 @@ export default function ContactPage() {
             <p className="text-brand-600 font-medium">{c.locationsSubtitle}</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Learning Center */}
             <div className="border-2 border-brand-200 rounded-2xl p-7 flex flex-col gap-4 hover:border-brand-400 transition-colors">
               <div className="w-16 h-16 rounded-full bg-brand-900 flex items-center justify-center mx-auto">
@@ -186,36 +186,6 @@ export default function ContactPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-auto w-full flex items-center justify-center gap-2 bg-brand-900 hover:bg-brand-800 text-white px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-colors"
-              >
-                <Calendar className="w-4 h-4" />
-                {c.byAppointment}
-              </a>
-            </div>
-
-            {/* Administration Office */}
-            <div className="border-2 border-accent-300 rounded-2xl p-7 flex flex-col gap-4 hover:border-accent-500 transition-colors">
-              <div className="w-16 h-16 rounded-full bg-accent-500 flex items-center justify-center mx-auto">
-                <Building2 className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-center">
-                <h3 className="font-bold text-accent-700 text-base uppercase tracking-wider mb-3">{c.adminOffice}</h3>
-                <div className="flex items-start gap-2 justify-center mb-1">
-                  <MapPin className="w-4 h-4 text-accent-500 flex-shrink-0 mt-0.5" />
-                  <div className="text-left">
-                    <p className="text-brand-700 text-sm font-medium">{c.adminOfficeAddr1}</p>
-                    <p className="text-brand-700 text-sm">{c.adminOfficeAddr2}</p>
-                  </div>
-                </div>
-                <div className="h-px bg-warm-200 my-3" />
-                <p className="text-brand-600 text-sm leading-relaxed">
-                  {c.adminOfficeDesc}
-                </p>
-              </div>
-              <a
-                href="https://maps.google.com/?q=821+W+Emmett+St+Kissimmee+FL+34741"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-auto w-full flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 text-white px-4 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-colors"
               >
                 <Calendar className="w-4 h-4" />
                 {c.byAppointment}
@@ -506,16 +476,6 @@ export default function ContactPage() {
                       <div className="font-bold">{c.mapLearningCenter}</div>
                       <div className="font-normal opacity-80">{c.learningCenterAddr1}</div>
                       <div className="font-normal opacity-80">{c.learningCenterAddr2}</div>
-                    </div>
-                  </div>
-
-                  {/* Administration Office */}
-                  <div className="pointer-events-auto flex items-center gap-2 bg-accent-500 text-white px-3 py-2 rounded-lg shadow-lg text-xs font-semibold leading-snug max-w-[200px]">
-                    <MapPin className="w-4 h-4 text-white flex-shrink-0" />
-                    <div>
-                      <div className="font-bold">{c.mapAdminOffice}</div>
-                      <div className="font-normal opacity-80">{c.adminOfficeAddr1}</div>
-                      <div className="font-normal opacity-80">{c.adminOfficeAddr2}</div>
                     </div>
                   </div>
 
