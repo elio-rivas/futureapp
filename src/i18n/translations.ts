@@ -120,6 +120,11 @@ export type Locale = 'en' | 'es';
 
 export const translations = {
   en: {
+    leadSubmission: {
+      error: 'We could not confirm the email was accepted. Your entries are still here. Please retry without changing them, or call (407) 301-9979.',
+      invalidInput: 'Please check your name, email and other fields. Use at most 5,000 characters for the message and try again. Your entries have been kept.',
+      reviewRequired: 'This inquiry needs a delivery check before it can be sent again. Your entries have been kept. Please call (407) 301-9979 to avoid a duplicate.',
+    },
     nav: {
       home: 'Home',
       programs: 'Programs',
@@ -187,7 +192,7 @@ export const translations = {
       submit: 'Get Started',
       submitting: 'Sending...',
       successTitle: 'Thank You!',
-      successMessage: 'We received your information and will reach out within 24 hours to discuss how we can support your child.',
+      successMessage: 'Your inquiry has been accepted for email delivery. Our team will follow up to discuss how we can support your child.',
       successCta: 'Complete Official Enrollment',
       successCtaNote: 'Ready to secure your spot? Complete the full enrollment form:',
     },
@@ -729,7 +734,7 @@ export const translations = {
       formSubmit: 'Submit Request',
       formSubmitting: 'Submitting...',
       formSuccessTitle: 'Request Submitted!',
-      formSuccessDesc: 'Thank you for reaching out. A member of our team will be in touch soon.',
+      formSuccessDesc: 'Your inquiry has been accepted for email delivery. A member of our team will be in touch soon.',
       formAnother: 'Submit Another Request',
       formError: 'Something went wrong. Please try again or contact us at (407) 301-9979.',
       serveTitle: 'We Proudly Serve Families',
@@ -1168,6 +1173,11 @@ export const translations = {
     },
   },
   es: {
+    leadSubmission: {
+      error: 'No pudimos confirmar la aceptación del correo. Tus datos siguen aquí. Reintenta sin cambiarlos o llama al (407) 301-9979.',
+      invalidInput: 'Revisa tu nombre, correo y los demás campos. Usa un máximo de 5,000 caracteres en el mensaje e intenta de nuevo. Tus datos se han conservado.',
+      reviewRequired: 'Esta consulta requiere verificar el envío antes de volver a enviarla. Tus datos se han conservado. Llama al (407) 301-9979 para evitar un duplicado.',
+    },
     nav: {
       home: 'Inicio',
       programs: 'Programas',
@@ -1235,7 +1245,7 @@ export const translations = {
       submit: 'Comenzar',
       submitting: 'Enviando...',
       successTitle: 'Gracias!',
-      successMessage: 'Recibimos tu información y nos comunicaremos dentro de 24 horas para hablar sobre cómo apoyar a tu hijo.',
+      successMessage: 'Tu consulta fue aceptada para envío por correo. Nuestro equipo se comunicará contigo para hablar sobre cómo apoyar a tu hijo.',
       successCta: 'Completar Inscripción Oficial',
       successCtaNote: 'Listo para asegurar tu lugar? Completa el formulario de inscripción:',
     },
@@ -1777,7 +1787,7 @@ export const translations = {
       formSubmit: 'Enviar Solicitud',
       formSubmitting: 'Enviando...',
       formSuccessTitle: '¡Solicitud Enviada!',
-      formSuccessDesc: 'Gracias por contactarnos. Un miembro de nuestro equipo se comunicará contigo pronto.',
+      formSuccessDesc: 'Tu consulta fue aceptada para envío por correo. Un miembro de nuestro equipo se comunicará contigo pronto.',
       formAnother: 'Enviar Otra Solicitud',
       formError: 'Algo salió mal. Por favor intenta de nuevo o contáctanos al (407) 301-9979.',
       serveTitle: 'Atendemos con Orgullo a las Familias',

@@ -1,11 +1,8 @@
 import { useState, useRef } from 'react';
 import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
-import { submitLead } from '../lib/supabase';
-import { trackGenerateLead, trackFormSubmit, trackJotformSubmit } from '../lib/analytics';
-
-const RATE_LIMIT_KEY = 'lead_form_last_submit';
-const RATE_LIMIT_MS = 60_000;
+import { submitLead, getSubmissionAttempt, LeadSubmissionError, type SubmissionAttempt } from '../lib/supabase';
+import { trackGenerateLead, trackFormSubmit } from '../lib/analytics';
 
 interface QuestionnaireFormProps {
   source?: string;
@@ -27,40 +24,34 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
   });
   const [honeypot, setHoneypot] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const renderedAt = useRef(Date.now());
+  const attempt = useRef<SubmissionAttempt>();
+  const submitting = useRef(false);
+  const [errorCode, setErrorCode] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (honeypot) {
-      setStatus('success');
-      return;
-    }
-
-    try {
-      const lastSubmit = localStorage.getItem(RATE_LIMIT_KEY);
-      if (lastSubmit && Date.now() - parseInt(lastSubmit, 10) < RATE_LIMIT_MS) {
-        setStatus('success');
-        return;
-      }
-    } catch { /* localStorage unavailable */ }
-
+    if (submitting.current) return;
+    submitting.current = true;
     setStatus('submitting');
-    trackFormSubmit(source, source);
+    try { trackFormSubmit(source, source); } catch { /* Analytics must not interrupt submission. */ }
 
     try {
-      await submitLead({
+      const payload = {
         ...formData,
         source,
         website: honeypot,
-        form_rendered_at: renderedAt.current,
-      });
+      };
+      attempt.current = await getSubmissionAttempt(payload, attempt.current);
+      await submitLead(payload, attempt.current.id);
       setStatus('success');
-      trackGenerateLead({ source, service: formData.interested_service });
-      try { localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString()); } catch { /* noop */ }
+      try { trackGenerateLead({ source, service: formData.interested_service }); } catch { /* noop */ }
       onSuccess?.();
-    } catch {
+    } catch (error) {
+      setErrorCode(error instanceof LeadSubmissionError ? error.code : 'email_status_unknown');
       setStatus('error');
+    } finally {
+      submitting.current = false;
     }
   };
 
@@ -92,6 +83,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
 
   return (
     <form onSubmit={handleSubmit}>
+      <fieldset disabled={status === 'submitting'} className="min-w-0">
       {/* Honeypot -- invisible to real users, bots fill it */}
       <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, height: 0, overflow: 'hidden' }}>
         <label htmlFor={`${source}-website`}>Website</label>
@@ -213,7 +205,11 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
       </div>
 
       {status === 'error' && (
-        <p className="text-error-600 text-sm mb-4 font-medium">Something went wrong. Please try again or call us directly.</p>
+        <p role="alert" className="text-error-600 text-sm mb-4 font-medium">
+          {errorCode === 'review_required' || errorCode === 'submission_conflict'
+            ? t.leadSubmission.reviewRequired
+            : errorCode === 'invalid_input' ? t.leadSubmission.invalidInput : t.leadSubmission.error}
+        </p>
       )}
 
       <button
@@ -233,6 +229,7 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
           </>
         )}
       </button>
+      </fieldset>
     </form>
   );
 }

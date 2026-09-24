@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   MapPin, Phone, Mail, MessageSquare, Calendar, Monitor,
   Building2, CheckCircle, Loader2, Send, Info, BookOpen,
   Heart, Users, Star,
 } from 'lucide-react';
-import { submitLead } from '../lib/supabase';
+import { submitLead, getSubmissionAttempt, LeadSubmissionError, type SubmissionAttempt } from '../lib/supabase';
 import { openLeadModal } from '../lib/leadModalStore';
 import { trackPhoneClick, trackEmailClick, trackScheduleConsultation } from '../lib/analytics';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -41,26 +41,39 @@ export default function ContactPage() {
   const [form, setForm] = useState<FormData>(emptyForm);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
+  const attempt = useRef<SubmissionAttempt>();
+  const submitting = useRef(false);
+  const [errorCode, setErrorCode] = useState('');
+
   const set = (k: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(prev => ({ ...prev, [k]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting.current) return;
+    submitting.current = true;
     setStatus('submitting');
     try {
-      await submitLead({
+      const payload = {
         parent_name: form.parentName,
         email: form.email,
         phone: form.phone,
+        student_name: form.studentName,
+        preferred_contact: form.preferredContact,
         child_age_grade: form.studentGrade,
         interested_service: form.program,
         main_concern: form.howCanWeHelp,
         message: form.message,
         source: 'contact_page',
-      });
+      };
+      attempt.current = await getSubmissionAttempt(payload, attempt.current);
+      await submitLead(payload, attempt.current.id);
       setStatus('success');
-    } catch {
+    } catch (error) {
+      setErrorCode(error instanceof LeadSubmissionError ? error.code : 'email_status_unknown');
       setStatus('error');
+    } finally {
+      submitting.current = false;
     }
   };
 
@@ -331,14 +344,15 @@ export default function ContactPage() {
                   <h3 className="font-display font-bold text-2xl text-brand-900 mb-2">{c.formSuccessTitle}</h3>
                   <p className="text-brand-600 mb-6">{c.formSuccessDesc}</p>
                   <button
-                    onClick={() => { setStatus('idle'); setForm(emptyForm); }}
+                    onClick={() => { setStatus('idle'); setForm(emptyForm); attempt.current = undefined; try { sessionStorage.removeItem('ffe-lead-attempt:contact_page'); } catch { /* noop */ } }}
                     className="inline-flex items-center gap-2 bg-brand-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-800 transition-colors"
                   >
                     {c.formAnother}
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit}>
+                  <fieldset disabled={status === 'submitting'} className="space-y-4 min-w-0">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-brand-700 uppercase tracking-wider mb-1.5">
@@ -421,8 +435,10 @@ export default function ContactPage() {
                   </div>
 
                   {status === 'error' && (
-                    <p className="text-error-600 text-sm font-medium bg-error-50 border border-error-200 rounded-xl p-3">
-                      {c.formError}
+                    <p role="alert" className="text-error-600 text-sm font-medium bg-error-50 border border-error-200 rounded-xl p-3">
+                      {errorCode === 'review_required' || errorCode === 'submission_conflict'
+                        ? t.leadSubmission.reviewRequired
+                        : errorCode === 'invalid_input' ? t.leadSubmission.invalidInput : t.leadSubmission.error}
                     </p>
                   )}
 
@@ -435,6 +451,7 @@ export default function ContactPage() {
                     )}
                     {c.formSubmit}
                   </button>
+                  </fieldset>
                 </form>
               )}
             </div>
