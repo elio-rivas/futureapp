@@ -179,8 +179,8 @@ export const translations = {
       mainConcernPlaceholder: 'What are you noticing about their learning?',
       interestedService: 'Interested In',
       serviceOptions: [
-        'Early Learners',
         targetedReadingEN.title,
+        'Early Learners',
         'Elementary School',
         'Unique Learning Needs',
         'Homeschool Students',
@@ -197,9 +197,11 @@ export const translations = {
       successCtaNote: 'Ready to secure your spot? Complete the full enrollment form:',
     },
     popupModal: {
-      title: 'Help Your Child Read with Confidence',
-      subtitle: 'Share a few details and our reading specialist will reach out to discuss the right support for your family.',
-      privacyNote: 'We respect your time. No spam -- just a quick, friendly follow-up from our reading specialist.',
+      title: 'Help Your Child Build Confidence in Learning',
+      tutoringTitle: 'Help Your Child Build Confidence in Reading and Math',
+      tutoringSubtitle: "Share a few details, and our team will contact you to discuss the tutoring option that best fits your child's needs.",
+      subtitle: 'Share a few details and our team will contact you to discuss the right support for your family.',
+      privacyNote: 'We respect your time. No spam -- just a quick, friendly follow-up from our team.',
     },
     parentConcern: {
       badge: 'We Understand',
@@ -1227,8 +1229,8 @@ export const translations = {
       mainConcernPlaceholder: '¿Qué notas sobre su aprendizaje?',
       interestedService: 'Interesado En',
       serviceOptions: [
-        'Early Learners',
         targetedReadingES.title,
+        'Early Learners',
         'Elementary School',
         'Unique Learning Needs',
         'Homeschool Students',
@@ -1245,9 +1247,11 @@ export const translations = {
       successCtaNote: 'Listo para asegurar tu lugar? Completa el formulario de inscripción:',
     },
     popupModal: {
-      title: 'Ayuda a Tu Hijo a Leer con Confianza',
-      subtitle: 'Comparte algunos detalles y nuestra especialista en lectura se comunicará contigo para hablar sobre el apoyo adecuado para tu familia.',
-      privacyNote: 'Respetamos tu tiempo. Sin spam -- solo un seguimiento rápido y amable de nuestra especialista en lectura.',
+      title: 'Ayuda a tu hijo a desarrollar confianza en su aprendizaje',
+      tutoringTitle: 'Ayuda a tu hijo a desarrollar confianza en lectura y matemáticas',
+      tutoringSubtitle: 'Comparte algunos datos y nuestro equipo se comunicará contigo para encontrar la modalidad de tutoría que mejor se adapte a las necesidades de tu hijo.',
+      subtitle: 'Comparte algunos detalles y nuestro equipo se comunicará contigo para hablar sobre el apoyo adecuado para tu familia.',
+      privacyNote: 'Respetamos tu tiempo. Sin spam -- solo un seguimiento rápido y amable de nuestro equipo.',
     },
     parentConcern: {
       badge: 'Te Entendemos',

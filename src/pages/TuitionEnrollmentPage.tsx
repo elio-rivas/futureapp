@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Calendar, ClipboardList, CreditCard, Award, Check, Plus, Minus,
+  Calendar, ClipboardList, CreditCard, Award, Plus, Minus,
   GraduationCap, TrendingUp, Users, Heart, BarChart2,
   MessageSquare, FileText, ArrowRight,
 } from 'lucide-react';

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { questionnaireService, questionnaireOptions } from '../lib/questionnairePrograms';
 import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { submitLead, getSubmissionAttempt, LeadSubmissionError, type SubmissionAttempt } from '../lib/supabase';
@@ -9,17 +10,18 @@ interface QuestionnaireFormProps {
   defaultService?: string;
   defaultMessage?: string;
   onSuccess?: () => void;
+  onServiceChange?: (service: string) => void;
 }
 
-export function QuestionnaireForm({ source = 'summer_questionnaire', defaultService = '', defaultMessage = '', onSuccess }: QuestionnaireFormProps) {
-  const { t } = useLanguage();
+export function QuestionnaireForm({ source = 'summer_questionnaire', defaultService = '', defaultMessage = '', onSuccess, onServiceChange }: QuestionnaireFormProps) {
+  const { t, locale } = useLanguage();
   const [formData, setFormData] = useState({
     parent_name: '',
     phone: '',
     email: '',
     child_age_grade: '',
     main_concern: '',
-    interested_service: defaultService,
+    interested_service: questionnaireService(defaultService),
     message: defaultMessage,
   });
   const [honeypot, setHoneypot] = useState('');
@@ -180,13 +182,15 @@ export function QuestionnaireForm({ source = 'summer_questionnaire', defaultServ
         <select
           id={`${source}-service`}
           value={formData.interested_service}
-          onChange={(e) => setFormData({ ...formData, interested_service: e.target.value })}
+          onChange={(e) => { setFormData({ ...formData, interested_service: e.target.value }); onServiceChange?.(e.target.value); }}
           className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 bg-warm-50"
         >
-          <option value="">--</option>
-          {t.questionnaire.serviceOptions.map((opt) => (
-            <option key={opt} value={opt}>{opt}</option>
+          {questionnaireOptions(locale).map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
+          {!questionnaireOptions(locale).some(opt => opt.value === formData.interested_service) && (
+            <option value={formData.interested_service}>{formData.interested_service}</option>
+          )}
         </select>
       </div>
 

@@ -307,7 +307,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               <button
-                onClick={openLeadModal}
+                onClick={() => openLeadModal()}
                 className="inline-flex items-center gap-2 bg-white text-amber-700 hover:bg-amber-50 px-8 py-4 rounded-xl font-bold text-sm transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap"
               >
                 <CalendarCheck className="w-5 h-5" />

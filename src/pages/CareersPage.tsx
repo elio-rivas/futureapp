@@ -1,4 +1,4 @@
-import { Briefcase, MapPin, Clock, CheckCircle, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Briefcase, MapPin, Clock, CheckCircle, Mail, Sparkles } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 export default function CareersPage() {

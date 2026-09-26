@@ -12,7 +12,7 @@ export interface AnalyticsEvent {
 
 declare global {
   interface Window {
-    dataLayer: AnalyticsEvent[];
+    dataLayer?: Record<string, unknown>[];
   }
 }
 

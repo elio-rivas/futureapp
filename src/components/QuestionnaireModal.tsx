@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { questionnaireService } from '../lib/questionnairePrograms';
 import { X, BookOpen } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { QuestionnaireForm } from './ParentQuestionnaire';
@@ -8,6 +9,7 @@ const SESSION_KEY = 'lead_popup_shown_this_session';
 
 export default function QuestionnaireModal() {
   const { t } = useLanguage();
+  const [selectedService, setSelectedService] = useState<string>();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [prefill, setPrefill] = useState<LeadModalPayload>({});
@@ -44,6 +46,7 @@ export default function QuestionnaireModal() {
     return onOpenLeadModal((payload) => {
       triggeredRef.current = true;
       setPrefill(payload);
+      setSelectedService(payload.defaultService);
       setIsOpen(true);
       try { sessionStorage.setItem(SESSION_KEY, '1'); } catch { /* noop */ }
     });
@@ -83,7 +86,9 @@ export default function QuestionnaireModal() {
 
   if (!isOpen) return null;
 
-  const closeLabel = t.questionnaire.submit ? 'Close' : 'Close';
+  const closeLabel = t.nav.home === 'Inicio' ? 'Cerrar' : 'Close';
+  const service = questionnaireService(selectedService ?? prefill.defaultService);
+  const isTutoring = /After-School Reading and Math Tutoring|lectura y matemáticas/i.test(service);
 
   return (
     <div
@@ -118,14 +123,16 @@ export default function QuestionnaireModal() {
               id="popup-form-title"
               className="font-display text-xl font-bold text-brand-900 mb-1.5 leading-tight"
             >
-              {t.popupModal.title}
+              {isTutoring ? t.popupModal.tutoringTitle : t.popupModal.title}
             </h2>
             <p className="text-brand-500 text-sm leading-relaxed max-w-sm mx-auto">
-              {t.popupModal.subtitle}
+              {isTutoring ? t.popupModal.tutoringSubtitle : t.popupModal.subtitle}
             </p>
           </div>
 
           <QuestionnaireForm
+            key={`${prefill.defaultService ?? ""}:${prefill.defaultMessage ?? ""}`}
+            onServiceChange={setSelectedService}
             source="popup_modal"
             defaultService={prefill.defaultService ?? t.questionnaire.serviceOptions[0]}
             defaultMessage={prefill.defaultMessage}
