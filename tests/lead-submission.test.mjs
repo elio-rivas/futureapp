@@ -23,6 +23,7 @@ function setup(options = {}) {
   let clock = Date.parse('2026-09-23T12:00:00Z');
   const handler = createLeadHandler({
     apiKey: () => options.noKey ? undefined : 'fake-test-key',
+    fromEmail: () => options.noSender ? undefined : 'notifications@futurefoundationsedu.com',
     now: () => clock,
     store: {
       async saveOnce(lead) {
@@ -53,10 +54,12 @@ test('accepted receipt, exact sender/recipient/reply_to, all contact fields', as
   const s = setup(); const r = await s.handler(request()); const b = await r.json();
   assert.equal(r.status, 200); assert.equal(b.status, 'accepted'); assert.equal(b.email_id, 'test-email-id');
   const mail = JSON.parse(s.calls[0].body);
-  assert.equal(mail.from, 'Future Foundations Education <notifications@futurefoundationsedu.com>');
+  assert.equal(mail.from, 'notifications@futurefoundationsedu.com');
   assert.deepEqual(mail.to, ['futurefoundations.edu@gmail.com']); assert.equal(mail.reply_to, payload.email);
   assert.match(mail.text, /TEST Student/); assert.match(mail.text, /Preferred contact: Email/);
-  assert.match(mail.text, /<b>TEST only<\/b>/); assert.equal(mail.html, undefined);
+  assert.match(mail.text, /<b>TEST only<\/b>/); assert.match(mail.html, /&lt;b&gt;TEST only&lt;\/b&gt;/);
+  assert.equal(mail.subject, 'FFE | New Questionnaire Submission | TEST Family');
+  assert.match(mail.text, /2026-09-23T12:00:00.000Z/);
   assert.equal(s.rows.get(id).email_status, 'accepted');
 });
 for (const status of [400, 401, 403, 429, 500]) {
@@ -69,11 +72,11 @@ for (const status of [400, 401, 403, 429, 500]) {
 for (const option of ['networkFails', 'missingId']) {
   test(`${option}: acceptance is unknown, not success`, async () => {
     const s = setup({ [option]: true }); const r = await s.handler(request());
-    assert.equal(r.status, 502); assert.equal((await r.json()).code, 'email_status_unknown');
+    assert.equal(r.status, 502); assert.equal((await r.json()).code, option === 'networkFails' ? 'provider_network_error' : 'email_status_unknown');
   });
 }
 test('missing secret and failed persistence never call Resend', async () => {
-  for (const option of ['noKey', 'saveFails']) {
+  for (const option of ['noKey', 'noSender', 'saveFails']) {
     const s = setup({ [option]: true }); const r = await s.handler(request());
     assert.equal(r.status, 503); assert.equal(s.calls.length, 0);
   }
@@ -108,6 +111,8 @@ test('invalid input, honeypot, oversized message, methods and CORS', async () =>
   const s = setup();
   for (const body of [null, [], { ...payload, email: 'bad' }, { ...payload, parent_name: 123 },
     { ...payload, website: 'bot' }, { ...payload, message: 'x'.repeat(5001) },
+    { ...payload, parent_name: '' }, { ...payload, email: '' },
+    { ...payload, source: 'popup_modal', phone: ' ' },
     { ...payload, submission_id: 'invalid' }, { ...payload, parent_name: 'Header\r\nInjection' }]) {
     assert.equal((await s.handler(request(body))).status, 400);
   }
@@ -144,4 +149,33 @@ test('retry identity survives reload without storing personal information', asyn
     assert.notEqual((await client.getSubmissionAttempt({ ...payload, message: 'new' }, first)).id, first.id);
     assert(!JSON.stringify([...storage.values()]).includes(payload.email));
   } finally { delete globalThis.sessionStorage; }
+});
+
+test('questionnaire answers retain whitespace and HTML is escaped', async () => {
+  const s = setup();
+  const answers = { ...payload, parent_name: ' TEST Parent ', phone: ' 407 301 9979 ',
+    child_age_grade: ' 2nd grade ', main_concern: '<script>alert("x")</script>',
+    interested_service: 'After-School Reading and Math Tutoring', message: '  line one\nline two  ' };
+  assert.equal((await s.handler(request(answers))).status, 200);
+  const mail = JSON.parse(s.calls[0].body);
+  for (const field of ['parent_name', 'phone', 'child_age_grade', 'main_concern', 'interested_service', 'message']) {
+    assert.equal(s.rows.get(id)[field], answers[field]);
+    assert(mail.text.includes(answers[field]));
+  }
+  assert(!mail.html.includes('<script>'));
+});
+
+const { questionnaireService, questionnaireOptions } = await load('src/lib/questionnairePrograms.ts');
+test('program dropdown order, translated labels, defaults and program-context aliases', () => {
+  const en = questionnaireOptions('en'); const es = questionnaireOptions('es');
+  assert.equal(en[0].label, 'After-School Reading and Math Tutoring');
+  assert.equal(es[0].label, 'Tutorías de lectura y matemáticas después de clases');
+  assert.deepEqual(en.slice(1).map(o => o.value), ['Early Learners', 'Elementary School', 'Unique Learning Needs', 'Homeschool Students', 'Appointment request', 'Not sure yet']);
+  assert.deepEqual(en.map(o => o.value), es.map(o => o.value));
+  assert.equal(questionnaireService(), en[0].value);
+  assert.equal(questionnaireService('targeted-reading'), en[0].value);
+  assert.equal(questionnaireService(es[0].label), en[0].value);
+  assert.equal(questionnaireService('Aprendices Tempranos (Pre-K)'), 'Early Learners');
+  assert.equal(questionnaireService('Estudiantes con Necesidades Únicas'), 'Unique Learning Needs');
+  for (const option of en) assert(es.some(o => o.value === option.value));
 });

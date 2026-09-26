@@ -124,6 +124,9 @@ export const translations = {
       error: 'We could not confirm the email was accepted. Your entries are still here. Please retry without changing them, or call (407) 301-9979.',
       invalidInput: 'Please check your name, email and other fields. Use at most 5,000 characters for the message and try again. Your entries have been kept.',
       reviewRequired: 'This inquiry needs a delivery check before it can be sent again. Your entries have been kept. Please call (407) 301-9979 to avoid a duplicate.',
+      savedTitle: 'Your inquiry has been saved',
+      savedNoEmail: 'We saved your inquiry, but the email notification could not be sent. Please call (407) 301-9979 if you need an immediate response. Do not submit the form again.',
+
     },
     nav: {
       home: 'Home',
@@ -1174,6 +1177,9 @@ export const translations = {
       error: 'No pudimos confirmar la aceptación del correo. Tus datos siguen aquí. Reintenta sin cambiarlos o llama al (407) 301-9979.',
       invalidInput: 'Revisa tu nombre, correo y los demás campos. Usa un máximo de 5,000 caracteres en el mensaje e intenta de nuevo. Tus datos se han conservado.',
       reviewRequired: 'Esta consulta requiere verificar el envío antes de volver a enviarla. Tus datos se han conservado. Llama al (407) 301-9979 para evitar un duplicado.',
+      savedTitle: 'Tu consulta quedó guardada',
+      savedNoEmail: 'Guardamos tu consulta, pero no se pudo enviar la notificación por correo. Si necesitas respuesta inmediata, llama al (407) 301-9979. No vuelvas a enviar el formulario.',
+
     },
     nav: {
       home: 'Inicio',

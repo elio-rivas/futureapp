@@ -9,6 +9,8 @@ const supabase = createClient(
 
 Deno.serve(createLeadHandler({
   apiKey: () => Deno.env.get('RESEND_API_KEY'),
+  fromEmail: () => Deno.env.get('RESEND_FROM_EMAIL'),
+  log: event => console.info(JSON.stringify(event)),
   now: Date.now,
   fetch,
   store: {

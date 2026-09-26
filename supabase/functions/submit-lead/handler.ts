@@ -30,6 +30,8 @@ export interface LeadStore {
 interface Dependencies {
   store: LeadStore;
   apiKey: () => string | undefined;
+  fromEmail: () => string | undefined;
+  log?: (event: Record<string, unknown>) => void;
   fetch: typeof fetch;
   now: () => number;
 }
@@ -78,34 +80,47 @@ export function createLeadHandler(deps: Dependencies) {
       if (typeof value !== 'string' || value.length > limits[field] || value.includes(String.fromCharCode(0))) {
         return fail(400, 'invalid_input');
       }
-      data[field] = value.trim();
+      data[field] = value;
     }
-    if (data.parent_name.length < 2 || /[\r\n]/.test(data.parent_name) ||
+    if (data.parent_name.trim().length < 2 || /[\r\n]/.test(data.parent_name) ||
         !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(data.email) || /[\r\n]/.test(data.interested_service)) {
+      return fail(400, 'invalid_input');
+    }
+    if (['popup_modal', 'homepage_inline', 'summer_questionnaire'].includes(data.source) && !data.phone.trim()) {
       return fail(400, 'invalid_input');
     }
     data.source ||= 'website';
     const apiKey = deps.apiKey();
-    if (!apiKey) return fail(503, 'service_unavailable');
+    const fromEmail = deps.fromEmail()?.trim();
+    if (!apiKey || !fromEmail || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromEmail)) {
+      deps.log?.({ event: 'configuration_error', submission_id: payload.submission_id,
+        missing_key: !apiKey, invalid_sender: !fromEmail || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromEmail) });
+      return fail(503, 'configuration_error');
+    }
+    const log = (event: string, details = {}) => deps.log?.({ event, submission_id: payload.submission_id, ...details });
 
     try {
       const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(data)));
       const payloadHash = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
       const id = payload.submission_id;
+      const timestamp = new Date(deps.now()).toISOString();
+      const fields = [
+        ['Parent / Guardian', data.parent_name], ['Phone', data.phone], ['Email', data.email],
+        ['Age / Grade', data.child_age_grade], ['Main concern', data.main_concern],
+        ['Interested service', data.interested_service], ['Message', data.message],
+        ['Student', data.student_name], ['Preferred contact', data.preferred_contact],
+        ['Submission timestamp', timestamp], ['Source', data.source], ['Reference', id],
+      ];
+      const escapeHtml = (value: string) => value.replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
       const notification = {
-        from: 'Future Foundations Education <notifications@futurefoundationsedu.com>',
+        from: fromEmail,
         to: ['futurefoundations.edu@gmail.com'],
         reply_to: data.email,
-        subject: `New Inquiry: ${data.parent_name}${data.interested_service ? ' — ' + data.interested_service : ''}`,
-        // Plain text preserves all user content without allowing HTML injection.
-        text: [
-          'Future Foundations Education — New Inquiry', `Reference: ${id}`,
-          `Source: ${data.source}`, `Parent / Guardian: ${data.parent_name}`,
-          `Email: ${data.email}`, `Phone: ${data.phone}`, `Student: ${data.student_name}`,
-          `Age / Grade: ${data.child_age_grade}`, `Main concern: ${data.main_concern}`,
-          `Interested service: ${data.interested_service}`, `Preferred contact: ${data.preferred_contact}`,
-          '', 'Message:', data.message,
-        ].join('\n'),
+        subject: `FFE | New Questionnaire Submission | ${data.parent_name}`,
+        text: fields.map(([label, value]) => `${label}: ${value}`).join('\n'),
+        html: '<h1>New Questionnaire Submission</h1><dl>' + fields.map(([label, value]) =>
+          `<dt><strong>${label}</strong></dt><dd style="white-space:pre-wrap">${escapeHtml(value)}</dd>`).join('') + '</dl>',
       };
       let saved: SavedLead;
       try {
@@ -113,6 +128,7 @@ export function createLeadHandler(deps: Dependencies) {
           created_at: new Date(deps.now()).toISOString(), email_status: 'pending',
           resend_email_id: null, notification_payload: notification });
       } catch {
+        log('save_failed');
         return fail(503, 'save_failed');
       }
       if (saved.payload_hash !== payloadHash) return fail(409, 'submission_conflict');
@@ -135,19 +151,31 @@ export function createLeadHandler(deps: Dependencies) {
           body: JSON.stringify(saved.notification_payload),
           signal: AbortSignal.timeout(15000),
         });
-        if (!response.ok) return fail(502, 'email_not_accepted');
+        if (!response.ok) {
+          // Log status and a bounded provider error name, never its message/body (may contain PII).
+          const error = await response.json().catch(() => null);
+          log('resend_rejected', { provider_status: response.status,
+            provider_code: typeof error?.name === 'string' && /^[a-z_]{1,80}$/.test(error.name) ? error.name : 'unknown' });
+          return fail(502, 'email_not_accepted');
+        }
         result = await response.json();
-        if (typeof result.id !== 'string' || !result.id) return fail(502, 'email_status_unknown');
+        if (typeof result?.id !== 'string' || !result.id) {
+          log('resend_invalid_receipt');
+          return fail(502, 'email_status_unknown');
+        }
       } catch {
-        return fail(502, 'email_status_unknown');
+        log('resend_network_or_response_failure');
+        return fail(502, 'provider_network_error');
       }
       try {
         await deps.store.markAccepted(id, result.id as string);
       } catch {
+        log('receipt_save_failed', { email_id: result.id });
         // Resend accepted it, but preserve a retryable response until the receipt
         // is durable. A retry recovers the same email ID via Resend idempotency.
         return fail(503, 'email_status_unknown');
       }
+      log('resend_accepted', { email_id: result.id });
       return reply(200, { success: true, status: 'accepted', submission_id: id, email_id: result.id });
     } catch {
       return fail(503, 'service_unavailable');

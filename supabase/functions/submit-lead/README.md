@@ -1,6 +1,67 @@
 # Inquiry delivery: deployment and verification
 
-Status checked 2026-09-23. Local implementation is ready; production is NOT repaired or deployed.
+## Current investigation — 2026-09-25 America/Managua
+
+Production is **not yet repaired**. The observations below supersede the historical
+September 23 status farther down this document.
+
+- Hostinger serves `assets/index-bCfaV8De.js`, with the strict acceptance client.
+- The configured Supabase project now resolves and responds. Do not replace its URL
+  based on the historical NXDOMAIN finding.
+- Actual production POST to
+  `https://jtmkyetyjhvhutzsnyqw.supabase.co/functions/v1/submit-lead`
+  using the configured public key and clearly labeled synthetic questionnaire data:
+  HTTP 200, `{"success":true,"message":"Lead captured successfully","email_sent":false}`.
+- This is the old backend response contract, not the checked-in handler. It provides
+  neither an acceptance status nor a Resend message ID. The strict frontend correctly
+  rejects it. The matching Resend log confirms HTTP 403 due to an unauthorized Gmail From
+  address (details and log link below).
+- CORS preflight responds HTTP 200. This failure is not currently a DNS outage.
+- Public DKIM, send-subdomain SPF/MX, and rsend CNAME now match all records documented
+  below. No DNS modifications were made. The authenticated Resend dashboard subsequently confirmed **Verified** after
+  restarting verification. `notifications@futurefoundationsedu.com` is now a suitable sender.
+- Local `.env` has only Vite Supabase public configuration, no Resend secret. No
+  authenticated Supabase CLI configuration or deployment workflow is installed locally.
+- Chrome shows separate FFE Hostinger/Gmail and Elio Resend sessions. Browser actions
+  were repeatedly interrupted by user tab/profile changes; dashboard inspection and
+  deployment have not been completed. An authenticated Supabase dashboard was requested.
+- No message ID was returned by the real test. API acceptance and Gmail delivery
+  remain unverified. Do not report the HTTP 200 as email success.
+
+### Required deployment steps
+
+1. Open the existing project at
+   https://supabase.com/dashboard/project/jtmkyetyjhvhutzsnyqw/functions.
+   Inspect `submit-lead` logs for the synthetic test and current deployed source.
+2. Check migration history; apply the existing reliable-notification migration if
+   not applied (do not rerun its constraint additions blindly).
+3. In Elio's Resend account, verify `futurefoundationsedu.com` under Domains.
+   Existing public DNS matches the previously supplied records. Reuse the existing
+   `ResendAPIKeyFFE`; if its full value is unavailable, the owner must supply it
+   directly through the project's Edge Function Secrets settings.
+4. Configure **Supabase Edge Function secrets**, not Hostinger static frontend vars:
+   `RESEND_API_KEY` and `RESEND_FROM_EMAIL`. The latter must be a bare verified-domain
+   sender address, such as `notifications@futurefoundationsedu.com` only after verification.
+   Supabase supplies `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` at runtime.
+5. Deploy both `index.ts` and `handler.ts` to `submit-lead` in that existing project.
+   With authenticated CLI: `supabase functions deploy submit-lead --project-ref jtmkyetyjhvhutzsnyqw`.
+6. Build with the existing confirmed public Vite configuration. Publish `dist/` through
+   the FFE Hostinger site's existing workflow. Preserve SPA configuration and other assets.
+7. Test the published questionnaire in English/Spanish. Expect matching submission ID,
+   `success: true`, `status: accepted`, and a nonempty `email_id`. Locate that ID in
+   Resend logs, confirm delivery events, and separately inspect FFE Gmail inbox/spam.
+
+Local changes add configurable sender, escaped HTML and plain text, timestamp, exact
+answer preservation, and safe provider diagnostics. Program selection uses stable
+existing English submission values while labels translate; `targeted-reading` remains
+an accepted context identifier. Other program-page titles map to their existing options.
+
+Validation: 19 automated tests pass; changed-file ESLint, strict handler typecheck,
+and production build pass. Full-project lint/typecheck fail on existing unrelated
+analytics/dependency, unused import, and AboutPage click-handler issues. Desktop/mobile
+interactive browser testing and live database migration testing remain pending.
+
+## Historical observations — 2026-09-23 (not current status)
 
 ## Actual external results
 
@@ -112,3 +173,24 @@ allowing another send. There is no automatic retry queue or claim of mailbox del
 
 References: https://resend.com/docs/dashboard/emails/idempotency-keys,
 https://supabase.com/docs/guides/functions/secrets.
+
+## Resend dashboard evidence from this investigation
+
+The authenticated Elio account's log for the real diagnostic submission is:
+https://resend.com/logs/0ee73da0-9cae-4e05-bcc9-665243d41013
+
+It identifies the Supabase runtime project `jtmkyetyjhvhutzsnyqw`, POST `/emails`,
+HTTP **403**, and **Domain not verified: Verify gmail.com or update your from domain**.
+The request sender was `futurefoundations.edu@gmail.com`, recipient the same Gmail,
+and subject `New Inquiry: TEST FFE delivery diagnostic — After-School Reading and Math Tutoring`.
+The production API key was **Future Foundations Notifications 3.** (sending access),
+not **ResendAPIKeyFFE**. This proves the provider failure is an unauthorized Gmail
+sender and the production configuration differs from the intended setup.
+
+The domain dashboard initially showed `futurefoundationsedu.com` **Failed**, based
+on missing-record checks dated September 23. All displayed DNS values matched live
+public DNS. Restarted verification via Resend; observed status **Pending**. This
+is a verification restart, not a new domain registration or DNS change.
+Dashboard: https://resend.com/domains/dafe5826-fd07-47db-b415-1e52c99e687e
+
+Verification completed: authenticated Resend dashboard now shows **Verified**, sending enabled, and DKIM/SPF/MX/CNAME all Verified (September 25, 6:57 PM displayed). No DNS edits were necessary.
