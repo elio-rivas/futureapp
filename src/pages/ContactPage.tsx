@@ -1,6 +1,7 @@
 
 import { useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
+
 import {
   MapPin,
   Phone,
@@ -23,6 +24,7 @@ import {
   submitLead,
   getSubmissionAttempt,
   LeadSubmissionError,
+  type LeadPayload,
   type SubmissionAttempt,
 } from '../lib/supabase';
 
@@ -97,13 +99,15 @@ export default function ContactPage() {
   const attempt = useRef<SubmissionAttempt>();
   const submitting = useRef(false);
 
+  const isSpanish = locale === 'es';
+
   const set =
     (key: keyof FormData) =>
     (
       event: ChangeEvent<
-        HTMLInputElement |
-        HTMLTextAreaElement |
-        HTMLSelectElement
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | HTMLSelectElement
       >
     ) => {
       setForm((previous) => ({
@@ -126,14 +130,6 @@ export default function ContactPage() {
     setStatus('submitting');
 
     try {
-      /*
-       * The deployed Supabase function accepts the
-       * standard lead fields.
-       *
-       * Additional information is included in the
-       * message so it reaches FFE without requiring
-       * changes to the working backend.
-       */
       const additionalDetails = [
         form.studentName.trim()
           ? `Student name: ${form.studentName.trim()}`
@@ -149,7 +145,7 @@ export default function ContactPage() {
         form.message.trim(),
       ].join('\n\n');
 
-      const payload = {
+      const payload: LeadPayload = {
         parent_name: form.parentName.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
@@ -159,6 +155,7 @@ export default function ContactPage() {
         message: completeMessage,
         source: 'contact_page',
         website: '',
+        language: isSpanish ? 'es' : 'en',
       };
 
       attempt.current = await getSubmissionAttempt(
@@ -189,8 +186,6 @@ export default function ContactPage() {
       submitting.current = false;
     }
   };
-
-  const isSpanish = locale === 'es';
 
   const successTitle = isSpanish
     ? '¡Mensaje enviado correctamente!'
@@ -223,13 +218,11 @@ export default function ContactPage() {
 
   return (
     <div className="pt-20 bg-white">
-
       {/* HERO */}
 
       <section className="bg-brand-900 pt-16 pb-14">
         <div className="container-max px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-
             <div>
               <h1 className="font-display font-bold text-5xl md:text-6xl text-white tracking-tight mb-3 uppercase">
                 {c.title}
@@ -237,9 +230,7 @@ export default function ContactPage() {
 
               <div className="flex items-center gap-2 mb-6">
                 <div className="h-px bg-accent-400 w-8" />
-
                 <Star className="w-4 h-4 text-accent-400 fill-accent-400" />
-
                 <div className="h-px bg-accent-400 w-8" />
               </div>
 
@@ -325,9 +316,7 @@ export default function ContactPage() {
 
                 <div className="flex items-center justify-center gap-2 mb-6">
                   <div className="h-px bg-accent-400 w-10" />
-
                   <Star className="w-3 h-3 text-accent-400 fill-accent-400" />
-
                   <div className="h-px bg-accent-400 w-10" />
                 </div>
 
@@ -336,14 +325,12 @@ export default function ContactPage() {
                   <br />
                   {c.tagline2}
                   <br />
-
                   <span className="text-accent-600 font-bold not-italic">
                     {c.tagline3}
                   </span>
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -369,7 +356,6 @@ export default function ContactPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-
             {/* Learning Center */}
 
             <div className="border-2 border-brand-200 rounded-2xl p-7 flex flex-col gap-4 hover:border-brand-400 transition-colors">
@@ -423,7 +409,6 @@ export default function ContactPage() {
                 </p>
               </div>
             </div>
-
           </div>
 
           <div className="bg-brand-50 border border-brand-200 rounded-xl p-5 flex items-start gap-4">
@@ -558,7 +543,6 @@ export default function ContactPage() {
       <section className="bg-white py-16">
         <div className="container-max px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-10 items-start">
-
             {/* Contact form */}
 
             <div className="lg:col-span-3">
@@ -576,15 +560,12 @@ export default function ContactPage() {
 
               {status === 'success' ||
               status === 'saved' ? (
-
                 /*
                  * Final confirmation.
-                 *
                  * No additional enrollment button.
                  * No Jotform link.
                  * No second step.
                  */
-
                 <div
                   role="status"
                   aria-live="polite"
@@ -604,15 +585,12 @@ export default function ContactPage() {
                       : successDescription}
                   </p>
                 </div>
-
               ) : (
-
                 <form onSubmit={handleSubmit}>
                   <fieldset
                     disabled={status === 'submitting'}
                     className="space-y-4 min-w-0"
                   >
-
                     {/* Parent name and email */}
 
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -876,7 +854,6 @@ export default function ContactPage() {
 
                       {c.formSubmit}
                     </button>
-
                   </fieldset>
                 </form>
               )}
@@ -885,7 +862,6 @@ export default function ContactPage() {
             {/* SERVICE AREA AND MAP */}
 
             <div className="lg:col-span-2 flex flex-col gap-6">
-
               <div className="bg-brand-900 rounded-2xl p-7 text-white">
                 <div className="flex items-center gap-2 mb-1">
                   <Star className="w-4 h-4 text-accent-400 fill-accent-400" />
@@ -942,7 +918,6 @@ export default function ContactPage() {
                 />
 
                 <div className="absolute inset-0 pointer-events-none flex flex-col justify-center items-end pr-3 gap-2.5">
-
                   <div className="pointer-events-auto flex items-center gap-2 bg-brand-900 text-white px-3 py-2 rounded-lg shadow-lg text-xs font-semibold leading-snug max-w-[200px]">
                     <MapPin className="w-4 h-4 text-white flex-shrink-0" />
 
@@ -974,7 +949,6 @@ export default function ContactPage() {
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
 
@@ -1015,11 +989,9 @@ export default function ContactPage() {
 
                 <div className="flex items-center gap-3 text-sm text-brand-700">
                   <MapPin className="w-4 h-4 text-accent-500 flex-shrink-0" />
-
                   944 E. Osceola Pkwy, Kissimmee, FL 34744
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -1030,7 +1002,6 @@ export default function ContactPage() {
       <section className="bg-brand-50 py-16">
         <div className="container-max px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0">
                 <Users className="w-10 h-10 text-accent-500" />
@@ -1102,11 +1073,9 @@ export default function ContactPage() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       </section>
-
     </div>
   );
 }

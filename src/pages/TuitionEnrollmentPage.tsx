@@ -1,8 +1,19 @@
 import { useState } from 'react';
 import {
-  Calendar, ClipboardList, CreditCard, Award, Plus, Minus,
-  GraduationCap, TrendingUp, Users, Heart, BarChart2,
-  MessageSquare, FileText, ArrowRight,
+  Calendar,
+  ClipboardList,
+  CreditCard,
+  Award,
+  Plus,
+  Minus,
+  GraduationCap,
+  TrendingUp,
+  Users,
+  Heart,
+  BarChart2,
+  MessageSquare,
+  FileText,
+  ArrowRight,
 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { openLeadModal } from '../lib/leadModalStore';

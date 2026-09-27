@@ -1,3 +1,6 @@
+
+export type LeadLanguage = 'en' | 'es';
+
 export interface LeadPayload {
   parent_name: string;
   email: string;
@@ -10,6 +13,7 @@ export interface LeadPayload {
   message?: string;
   source?: string;
   website?: string;
+  language?: LeadLanguage;
 }
 
 export interface SubmissionAttempt {
@@ -28,41 +32,102 @@ export interface LeadSubmissionResult {
   success: true;
   email_sent: boolean;
   message?: string;
+  confirmation_status?:
+    | 'accepted'
+    | 'pending'
+    | 'unknown'
+    | 'review_required'
+    | 'not_applicable';
 }
 
-export async function getSubmissionAttempt(
+interface EdgeFunctionResponse {
+  success?: unknown;
+  status?: unknown;
+  code?: unknown;
+  submission_id?: unknown;
+  email_id?: unknown;
+  confirmation_status?: unknown;
+  message?: unknown;
+
+  // Retained for compatibility with the
+  // original Bolt-managed Edge Function.
+  email_sent?: unknown;
+}
+
+function normalizePayload(
   data: LeadPayload,
-  previous?: SubmissionAttempt
-): Promise<SubmissionAttempt> {
-  const digest = await crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(JSON.stringify(data))
+): Required<LeadPayload> {
+  return {
+    parent_name: data.parent_name,
+    email: data.email,
+    phone: data.phone ?? '',
+    student_name: data.student_name ?? '',
+    child_age_grade: data.child_age_grade ?? '',
+    main_concern: data.main_concern ?? '',
+    interested_service: data.interested_service ?? '',
+    preferred_contact: data.preferred_contact ?? '',
+    message: data.message ?? '',
+    source: data.source || 'website',
+    website: data.website ?? '',
+    language: data.language ?? 'en',
+  };
+}
+
+async function fingerprintPayload(
+  data: LeadPayload,
+): Promise<string> {
+  const encoded = new TextEncoder().encode(
+    JSON.stringify(normalizePayload(data)),
   );
 
-  const fingerprint = Array.from(
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    encoded,
+  );
+
+  return Array.from(
     new Uint8Array(digest),
-    byte => byte.toString(16).padStart(2, '0')
+    (byte) => byte.toString(16).padStart(2, '0'),
   ).join('');
+}
+
+/**
+ * Returns the same submission ID when the
+ * same form data is retried.
+ *
+ * The identifier is preserved in sessionStorage
+ * when browser storage is available.
+ */
+export async function getSubmissionAttempt(
+  data: LeadPayload,
+  previous?: SubmissionAttempt,
+): Promise<SubmissionAttempt> {
+  const fingerprint =
+    await fingerprintPayload(data);
 
   if (previous?.fingerprint === fingerprint) {
     return previous;
   }
 
-  const storageKey = `ffe-lead-attempt:${data.source || 'website'}`;
+  const storageKey =
+    `ffe-lead-attempt:${data.source || 'website'}`;
 
   try {
     const stored = JSON.parse(
-      sessionStorage.getItem(storageKey) || 'null'
-    );
+      sessionStorage.getItem(storageKey) || 'null',
+    ) as Partial<SubmissionAttempt> | null;
 
     if (
       stored?.fingerprint === fingerprint &&
       typeof stored.id === 'string'
     ) {
-      return stored as SubmissionAttempt;
+      return {
+        fingerprint,
+        id: stored.id,
+      };
     }
   } catch {
-    // Browser storage may be unavailable.
+    // Browser storage is optional.
   }
 
   const attempt: SubmissionAttempt = {
@@ -73,27 +138,92 @@ export async function getSubmissionAttempt(
   try {
     sessionStorage.setItem(
       storageKey,
-      JSON.stringify(attempt)
+      JSON.stringify(attempt),
     );
   } catch {
-    // Storage is optional.
+    // Continue if browser storage is unavailable.
   }
 
   return attempt;
 }
 
+function parseResponse(
+  value: unknown,
+): EdgeFunctionResponse | null {
+  if (
+    value === null ||
+    typeof value !== 'object' ||
+    Array.isArray(value)
+  ) {
+    return null;
+  }
+
+  return value as EdgeFunctionResponse;
+}
+
+function confirmationStatus(
+  value: unknown,
+): LeadSubmissionResult['confirmation_status'] {
+  switch (value) {
+    case 'accepted':
+    case 'pending':
+    case 'unknown':
+    case 'review_required':
+    case 'not_applicable':
+      return value;
+
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Submits a lead to the Bolt-managed
+ * Supabase Edge Function.
+ *
+ * New contract:
+ *
+ * Request:
+ *   submission_id: UUID
+ *   language: "en" | "es"
+ *
+ * Success:
+ *   success: true
+ *   status: "accepted"
+ *   confirmation_status: ...
+ *
+ * The legacy email_sent response is also
+ * understood during the transition.
+ */
 export async function submitLead(
   data: LeadPayload,
-  _submissionId?: string
+  submissionId?: string,
 ): Promise<LeadSubmissionResult> {
   const url = import.meta.env.VITE_SUPABASE_URL
     ?.replace(/\/$/, '');
 
-  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const anonKey =
+    import.meta.env.VITE_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
-    throw new LeadSubmissionError('service_unavailable');
+    throw new LeadSubmissionError(
+      'service_unavailable',
+    );
   }
+
+  const normalized =
+    normalizePayload(data);
+
+  /*
+   * Prefer the ID already generated by the
+   * calling form. Otherwise obtain a stable
+   * attempt for this payload.
+   */
+  const attempt = submissionId
+    ? {
+        id: submissionId,
+      }
+    : await getSubmissionAttempt(data);
 
   let response: Response;
 
@@ -102,55 +232,142 @@ export async function submitLead(
       `${url}/functions/v1/submit-lead`,
       {
         method: 'POST',
+
         headers: {
           Authorization: `Bearer ${anonKey}`,
           apikey: anonKey,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+
+        body: JSON.stringify({
+          ...normalized,
+          submission_id: attempt.id,
+        }),
+
         signal: AbortSignal.timeout(25000),
-      }
+      },
     );
   } catch {
-    // The request may already have reached the server.
-    throw new LeadSubmissionError('review_required');
+    /*
+     * The server may already have accepted
+     * the submission.
+     *
+     * Preserve the same submission ID for
+     * a later manual retry.
+     */
+    throw new LeadSubmissionError(
+      'review_required',
+    );
   }
 
-  let result: unknown;
+  let rawResponse: unknown;
 
   try {
-    result = await response.json();
+    rawResponse = await response.json();
   } catch {
-    throw new LeadSubmissionError('review_required');
+    throw new LeadSubmissionError(
+      'review_required',
+    );
   }
 
   const body =
-    result !== null && typeof result === 'object'
-      ? result as Record<string, unknown>
-      : null;
+    parseResponse(rawResponse);
 
   if (!response.ok || body?.success !== true) {
-    if (response.status === 400) {
-      throw new LeadSubmissionError('invalid_input');
+    const code =
+      typeof body?.code === 'string'
+        ? body.code
+        : undefined;
+
+    if (
+      response.status === 400 ||
+      code === 'invalid_input'
+    ) {
+      throw new LeadSubmissionError(
+        'invalid_input',
+      );
     }
 
-    throw new LeadSubmissionError('review_required');
+    if (
+      response.status === 409 ||
+      code === 'submission_conflict' ||
+      code === 'review_required'
+    ) {
+      throw new LeadSubmissionError(
+        'review_required',
+      );
+    }
+
+    if (
+      code === 'configuration_error' ||
+      code === 'service_unavailable'
+    ) {
+      throw new LeadSubmissionError(
+        'service_unavailable',
+      );
+    }
+
+    if (
+      code === 'email_not_accepted'
+    ) {
+      throw new LeadSubmissionError(
+        'saved_no_email',
+      );
+    }
+
+    throw new LeadSubmissionError(
+      'review_required',
+    );
   }
 
+  /*
+   * Current Edge Function response.
+   *
+   * status = accepted means Resend accepted
+   * the institutional notification.
+   *
+   * It does not guarantee final delivery
+   * to the recipient's inbox.
+   */
+  if (body.status === 'accepted') {
+    return {
+      success: true,
+      email_sent: true,
+      message:
+        typeof body.message === 'string'
+          ? body.message
+          : undefined,
+      confirmation_status:
+        confirmationStatus(
+          body.confirmation_status,
+        ),
+    };
+  }
+
+  /*
+   * Original Bolt function response.
+   *
+   * Keep this branch only for compatibility
+   * during the coordinated deployment.
+   */
   if (body.email_sent === false) {
-    throw new LeadSubmissionError('saved_no_email');
+    throw new LeadSubmissionError(
+      'saved_no_email',
+    );
   }
 
-  if (body.email_sent !== true) {
-    throw new LeadSubmissionError('review_required');
+  if (body.email_sent === true) {
+    return {
+      success: true,
+      email_sent: true,
+      message:
+        typeof body.message === 'string'
+          ? body.message
+          : undefined,
+    };
   }
 
-  return {
-    success: true,
-    email_sent: true,
-    message:
-      typeof body.message === 'string'
-        ? body.message
-        : undefined,
-  };
+  throw new LeadSubmissionError(
+    'review_required',
+  );
 }

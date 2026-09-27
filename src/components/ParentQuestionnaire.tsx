@@ -1,21 +1,28 @@
 
 import { useState, useRef } from 'react';
+import type { FormEvent } from 'react';
+
 import {
   questionnaireService,
   questionnaireOptions,
 } from '../lib/questionnairePrograms';
+
 import {
   ArrowRight,
   CheckCircle,
   Loader2,
 } from 'lucide-react';
+
 import { useLanguage } from '../i18n/LanguageContext';
+
 import {
   submitLead,
   getSubmissionAttempt,
   LeadSubmissionError,
+  type LeadPayload,
   type SubmissionAttempt,
 } from '../lib/supabase';
+
 import {
   trackGenerateLead,
   trackFormSubmit,
@@ -28,6 +35,13 @@ interface QuestionnaireFormProps {
   onSuccess?: () => void;
   onServiceChange?: (service: string) => void;
 }
+
+type SubmissionStatus =
+  | 'idle'
+  | 'submitting'
+  | 'success'
+  | 'saved'
+  | 'error';
 
 export function QuestionnaireForm({
   source = 'summer_questionnaire',
@@ -44,26 +58,33 @@ export function QuestionnaireForm({
     email: '',
     child_age_grade: '',
     main_concern: '',
-    interested_service: questionnaireService(defaultService),
+    interested_service: questionnaireService(
+      defaultService
+    ),
     message: defaultMessage,
   });
 
   const [honeypot, setHoneypot] = useState('');
 
-  const [status, setStatus] = useState<
-    'idle' | 'submitting' | 'success' | 'saved' | 'error'
-  >('idle');
+  const [status, setStatus] =
+    useState<SubmissionStatus>('idle');
 
   const attempt = useRef<SubmissionAttempt>();
   const submitting = useRef(false);
+
   const [errorCode, setErrorCode] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
 
-    if (submitting.current) return;
+    if (submitting.current) {
+      return;
+    }
 
     submitting.current = true;
+    setErrorCode('');
     setStatus('submitting');
 
     try {
@@ -73,18 +94,28 @@ export function QuestionnaireForm({
     }
 
     try {
-      const payload = {
+      const payload: LeadPayload = {
         ...formData,
         source,
         website: honeypot,
+        language: locale === 'es' ? 'es' : 'en',
       };
 
+      /*
+       * Preserve the same submission ID when
+       * an identical request is retried.
+       *
+       * Language is part of the payload fingerprint.
+       */
       attempt.current = await getSubmissionAttempt(
         payload,
         attempt.current
       );
 
-      await submitLead(payload, attempt.current.id);
+      await submitLead(
+        payload,
+        attempt.current.id
+      );
 
       setStatus('success');
 
@@ -123,10 +154,16 @@ export function QuestionnaireForm({
    * No Jotform.
    * No second phase.
    *
-   * If the inquiry was saved but email delivery
-   * failed, display the corresponding warning.
+   * A successfully accepted institutional
+   * notification completes the inquiry.
+   *
+   * Parent acknowledgment status is handled
+   * independently by the Edge Function.
    */
-  if (status === 'success' || status === 'saved') {
+  if (
+    status === 'success' ||
+    status === 'saved'
+  ) {
     return (
       <div
         role="status"
@@ -163,6 +200,7 @@ export function QuestionnaireForm({
         className="min-w-0"
       >
         {/* Invisible honeypot for spam prevention. */}
+
         <div
           aria-hidden="true"
           style={{
@@ -185,13 +223,14 @@ export function QuestionnaireForm({
             tabIndex={-1}
             autoComplete="off"
             value={honeypot}
-            onChange={(e) =>
-              setHoneypot(e.target.value)
+            onChange={(event) =>
+              setHoneypot(event.target.value)
             }
           />
         </div>
 
         {/* Parent name and phone */}
+
         <div className="grid sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label
@@ -209,10 +248,10 @@ export function QuestionnaireForm({
                 t.questionnaire.parentNamePlaceholder
               }
               value={formData.parent_name}
-              onChange={(e) =>
+              onChange={(event) =>
                 setFormData({
                   ...formData,
-                  parent_name: e.target.value,
+                  parent_name: event.target.value,
                 })
               }
               className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 placeholder:text-brand-400 bg-warm-50"
@@ -235,10 +274,10 @@ export function QuestionnaireForm({
                 t.questionnaire.phonePlaceholder
               }
               value={formData.phone}
-              onChange={(e) =>
+              onChange={(event) =>
                 setFormData({
                   ...formData,
-                  phone: e.target.value,
+                  phone: event.target.value,
                 })
               }
               className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 placeholder:text-brand-400 bg-warm-50"
@@ -247,6 +286,7 @@ export function QuestionnaireForm({
         </div>
 
         {/* Email and student age/grade */}
+
         <div className="grid sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label
@@ -264,10 +304,10 @@ export function QuestionnaireForm({
                 t.questionnaire.emailPlaceholder
               }
               value={formData.email}
-              onChange={(e) =>
+              onChange={(event) =>
                 setFormData({
                   ...formData,
-                  email: e.target.value,
+                  email: event.target.value,
                 })
               }
               className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 placeholder:text-brand-400 bg-warm-50"
@@ -289,10 +329,10 @@ export function QuestionnaireForm({
                 t.questionnaire.childAgeGradePlaceholder
               }
               value={formData.child_age_grade}
-              onChange={(e) =>
+              onChange={(event) =>
                 setFormData({
                   ...formData,
-                  child_age_grade: e.target.value,
+                  child_age_grade: event.target.value,
                 })
               }
               className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 placeholder:text-brand-400 bg-warm-50"
@@ -301,6 +341,7 @@ export function QuestionnaireForm({
         </div>
 
         {/* Main concern */}
+
         <div className="mb-4">
           <label
             htmlFor={`${source}-concern`}
@@ -316,10 +357,10 @@ export function QuestionnaireForm({
               t.questionnaire.mainConcernPlaceholder
             }
             value={formData.main_concern}
-            onChange={(e) =>
+            onChange={(event) =>
               setFormData({
                 ...formData,
-                main_concern: e.target.value,
+                main_concern: event.target.value,
               })
             }
             className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 placeholder:text-brand-400 bg-warm-50"
@@ -327,6 +368,7 @@ export function QuestionnaireForm({
         </div>
 
         {/* Interested program */}
+
         <div className="mb-4">
           <label
             htmlFor={`${source}-service`}
@@ -338,40 +380,50 @@ export function QuestionnaireForm({
           <select
             id={`${source}-service`}
             value={formData.interested_service}
-            onChange={(e) => {
+            onChange={(event) => {
               setFormData({
                 ...formData,
-                interested_service: e.target.value,
+                interested_service:
+                  event.target.value,
               });
 
-              onServiceChange?.(e.target.value);
+              onServiceChange?.(
+                event.target.value
+              );
             }}
             className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all text-brand-900 bg-warm-50"
           >
-            {questionnaireOptions(locale).map((opt) => (
-              <option
-                key={opt.value}
-                value={opt.value}
-              >
-                {opt.label}
-              </option>
-            ))}
+            {questionnaireOptions(locale).map(
+              (option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                >
+                  {option.label}
+                </option>
+              )
+            )}
 
             {!questionnaireOptions(locale).some(
-              (opt) =>
-                opt.value ===
+              (option) =>
+                option.value ===
                 formData.interested_service
             ) && (
               <option
-                value={formData.interested_service}
+                value={
+                  formData.interested_service
+                }
               >
-                {formData.interested_service}
+                {
+                  formData.interested_service
+                }
               </option>
             )}
           </select>
         </div>
 
         {/* Additional message */}
+
         <div className="mb-6">
           <label
             htmlFor={`${source}-message`}
@@ -387,10 +439,10 @@ export function QuestionnaireForm({
               t.questionnaire.messagePlaceholder
             }
             value={formData.message}
-            onChange={(e) =>
+            onChange={(event) =>
               setFormData({
                 ...formData,
-                message: e.target.value,
+                message: event.target.value,
               })
             }
             className="w-full px-4 py-3 border border-warm-200 rounded-xl focus:ring-2 focus:ring-brand-400 focus:border-brand-400 outline-none transition-all resize-none text-brand-900 placeholder:text-brand-400 bg-warm-50"
@@ -398,6 +450,7 @@ export function QuestionnaireForm({
         </div>
 
         {/* Submission errors */}
+
         {status === 'error' && (
           <p
             role="alert"
@@ -414,6 +467,7 @@ export function QuestionnaireForm({
         )}
 
         {/* Initial submit button only */}
+
         <button
           type="submit"
           disabled={status === 'submitting'}
@@ -446,6 +500,7 @@ export default function ParentQuestionnaire() {
     >
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 right-0 w-72 h-72 bg-white rounded-full translate-x-1/3 -translate-y-1/3" />
+
         <div className="absolute bottom-0 left-0 w-56 h-56 bg-white rounded-full -translate-x-1/3 translate-y-1/3" />
       </div>
 

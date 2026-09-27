@@ -1,150 +1,125 @@
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers":
-    "Content-Type, Authorization, X-Client-Info, Apikey",
-};
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
-interface LeadPayload {
-  parent_name: string;
-  phone?: string;
-  email: string;
-  child_age_grade?: string;
-  main_concern?: string;
-  interested_service?: string;
-  message?: string;
-  source?: string;
-  website?: string;
-  form_rendered_at?: number;
-}
+import { createClient } from 'npm:@supabase/supabase-js@2';
 
-function sanitize(str: string | undefined): string {
-  if (!str) return "";
-  return str.trim().slice(0, 500).replace(/<[^>]*>/g, "");
-}
+import {
+  createLeadHandler,
+  type SavedLead,
+} from './handler.ts';
 
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
-}
+// Official Future Foundations Education logo.
+// This is the existing public image used by the website.
+const LOGO_URL =
+  'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop/dWxv3J07bnh78Qgv/screenshot-2025-02-01-161224-AVL7Zbq4VKsNQVn6.png';
 
-Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { status: 200, headers: corsHeaders });
-  }
+// Connect to the existing Bolt-managed Supabase project.
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  },
+);
 
-  try {
-    const payload: LeadPayload = await req.json();
+// Connect the HTTP handler to Supabase and Resend.
+Deno.serve(
+  createLeadHandler({
+    apiKey: () =>
+      Deno.env.get('RESEND_API_KEY'),
 
-    // Honeypot check -- if 'website' field has content, it's a bot
-    if (payload.website) {
-      return new Response(
-        JSON.stringify({ success: true, message: "Lead captured successfully" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    fromEmail: () =>
+      Deno.env.get('RESEND_FROM_EMAIL'),
 
-    // Timing check -- form submitted too fast (< 2 seconds) is likely a bot
-    if (payload.form_rendered_at) {
-      const elapsed = Date.now() - payload.form_rendered_at;
-      if (elapsed < 2000) {
-        return new Response(
-          JSON.stringify({ success: true, message: "Lead captured successfully" }),
-          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
+    logoUrl: () => LOGO_URL,
 
-    // Required field validation
-    const parentName = sanitize(payload.parent_name);
-    const email = sanitize(payload.email);
+    now: Date.now,
 
-    if (!parentName || parentName.length < 2) {
-      return new Response(
-        JSON.stringify({ error: "A valid name is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    fetch,
 
-    if (!email || !isValidEmail(email)) {
-      return new Response(
-        JSON.stringify({ error: "A valid email is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    log: (event) => {
+      console.info(JSON.stringify(event));
+    },
 
-    const sanitizedData = {
-      parent_name: parentName,
-      phone: sanitize(payload.phone),
-      email,
-      child_age_grade: sanitize(payload.child_age_grade),
-      main_concern: sanitize(payload.main_concern),
-      interested_service: sanitize(payload.interested_service),
-      message: sanitize(payload.message),
-      source: sanitize(payload.source) || "website",
-    };
+    store: {
+      // Insert a submission only once.
+      // Existing submissions are never overwritten.
+      async saveOnce(lead: SavedLead): Promise<SavedLead> {
+        const { error } = await supabase
+          .from('leads')
+          .upsert(lead, {
+            onConflict: 'id',
+            ignoreDuplicates: true,
+          });
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        if (error) {
+          throw new Error('Lead persistence failed');
+        }
 
-    const { error: dbError } = await supabase.from("leads").insert(sanitizedData);
+        const {
+          data,
+          error: readError,
+        } = await supabase
+          .from('leads')
+          .select('*')
+          .eq('id', lead.id)
+          .single();
 
-    if (dbError) {
-      return new Response(
-        JSON.stringify({ error: "Failed to save lead" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+        if (readError || !data) {
+          throw new Error('Lead lookup failed');
+        }
 
-    // Send email notification via Resend if configured
-    const resendKey = Deno.env.get("RESEND_API_KEY");
-    if (resendKey) {
-      const emailBody = [
-        `NEW LEAD - Future Foundations Education`,
-        ``,
-        `Source: ${sanitizedData.source}`,
-        `Date: ${new Date().toLocaleString("en-US", { timeZone: "America/New_York" })}`,
-        ``,
-        `--- Parent Information ---`,
-        `Name: ${sanitizedData.parent_name}`,
-        `Email: ${sanitizedData.email}`,
-        `Phone: ${sanitizedData.phone || "Not provided"}`,
-        ``,
-        `--- Child Information ---`,
-        `Age/Grade: ${sanitizedData.child_age_grade || "Not provided"}`,
-        `Main Concern: ${sanitizedData.main_concern || "Not provided"}`,
-        `Interested Service: ${sanitizedData.interested_service || "Not provided"}`,
-        ``,
-        `--- Message ---`,
-        sanitizedData.message || "No additional message",
-      ].join("\n");
+        return data as SavedLead;
+      },
 
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "Future Foundations <leads@futurefoundationsedu.com>",
-          to: ["tutoring@futurefoundationsedu.com"],
-          subject: `New Lead: ${sanitizedData.parent_name} - ${sanitizedData.source}`,
-          text: emailBody,
-        }),
-      });
-    }
+      // Record acceptance of the email sent to FFE.
+      async markAccepted(
+        id: string,
+        emailId: string,
+      ): Promise<void> {
+        const { data, error } = await supabase
+          .from('leads')
+          .update({
+            email_status: 'accepted',
+            resend_email_id: emailId,
+            email_accepted_at: new Date().toISOString(),
+          })
+          .eq('id', id)
+          .select('id')
+          .single();
 
-    return new Response(
-      JSON.stringify({ success: true, message: "Lead captured successfully" }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  } catch {
-    return new Response(
-      JSON.stringify({ error: "Invalid request" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  }
-});
+        if (error || !data) {
+          throw new Error(
+            'Institutional email receipt persistence failed',
+          );
+        }
+      },
+
+      // Record acceptance of the automatic email
+      // sent to the parent or guardian.
+      async markConfirmationAccepted(
+        id: string,
+        emailId: string,
+      ): Promise<void> {
+        const { data, error } = await supabase
+          .from('leads')
+          .update({
+            confirmation_status: 'accepted',
+            confirmation_email_id: emailId,
+          })
+          .eq('id', id)
+          .select('id')
+          .single();
+
+        if (error || !data) {
+          throw new Error(
+            'Confirmation email receipt persistence failed',
+          );
+        }
+      },
+    },
+  }),
+);
