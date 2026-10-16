@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
 import Header from './components/Header';
@@ -14,14 +15,17 @@ import TuitionEnrollmentPage from './pages/TuitionEnrollmentPage';
 import AssessmentsPage from './pages/AssessmentsPage';
 import CareersPage from './pages/CareersPage';
 import QuestionnaireModal from './components/QuestionnaireModal';
+import OneOnOneTutoringPage from './pages/OneOnOneTutoringPage';
 
 export default function App() {
   return (
     <LanguageProvider>
       <BrowserRouter>
         <RouteTracker />
+
         <div className="min-h-screen flex flex-col">
           <Header />
+
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -34,8 +38,15 @@ export default function App() {
               <Route path="/tuition-enrollment" element={<TuitionEnrollmentPage />} />
               <Route path="/assessments" element={<AssessmentsPage />} />
               <Route path="/careers" element={<CareersPage />} />
+
+              {/* Bilingual One-on-One Tutoring */}
+              <Route
+                path="/:lang/one-on-one-tutoring"
+                element={<OneOnOneTutoringPage />}
+              />
             </Routes>
           </main>
+
           <Footer />
           <QuestionnaireModal />
         </div>
