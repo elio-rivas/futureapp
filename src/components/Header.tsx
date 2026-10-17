@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Globe, ChevronDown, MapPin } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { openLeadModal } from '../lib/leadModalStore';
@@ -26,9 +26,28 @@ export default function Header() {
   const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false);
   const [mobileAssessmentsOpen, setMobileAssessmentsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { locale, toggleLocale, t } = useLanguage();
   const programsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const assessmentsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Keep the global language selector and the tutoring route in sync.
+  // Preserve query parameters (including campaign tracking) and form state.
+  const handleLanguageToggle = () => {
+    const nextLocale = locale === 'en' ? 'es' : 'en';
+    const isTutoringPage = /^\/(es|en)\/one-on-one-tutoring\/?$/.test(location.pathname);
+
+    toggleLocale();
+
+    if (isTutoringPage) {
+      navigate({
+        pathname: `/${nextLocale}/one-on-one-tutoring`,
+        search: location.search,
+        hash: location.hash,
+      });
+    }
+  };
+
 
   useEffect(() => {
     setIsOpen(false);
@@ -79,7 +98,7 @@ export default function Header() {
             <span>Kissimmee, FL · Serving Central Florida</span>
           </div>
           <button
-            onClick={toggleLocale}
+            onClick={handleLanguageToggle}
             className="flex items-center gap-1.5 text-brand-100 hover:text-white transition-colors font-semibold py-1 px-2 rounded"
             aria-label="Toggle language"
           >
@@ -257,15 +276,15 @@ export default function Header() {
           <div className="flex items-center gap-3 flex-none ml-auto xl:ml-0">
             <button
               onClick={() => openLeadModal()}
-              className="hidden xl:inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-normal transition-all hover:shadow-md"
+              className="hidden xl:inline-flex items-center justify-center whitespace-nowrap bg-accent-500 hover:bg-accent-600 text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-normal transition-allhover:shadow-md"
             >
               {t.nav.scheduleConsultation}
             </button>
 
             {/* Mobile: language toggle */}
             <button
-              onClick={toggleLocale}
-              className="xl:hidden inline-flex items-center gap-1.5 h-10 px-3 rounded-lg text-sm font-semibold transition-all text-brand-700 hover:text-brand-900 hover:bg-warm-100 border border-warm-200"
+              onClick={handleLanguageToggle}
+              className="xl:hidden inline-flex items-center gap-1.5 h-10 px-3 rounded-lg text-sm font-semiboldtransition-all text-brand-700 hover:text-brand-900 hover:bg-warm-100 border border-warm-200"
               aria-label="Toggle language"
             >
               <Globe className="w-4 h-4" />
