@@ -498,11 +498,11 @@ export default function OneOnOneTutoringPage() {
           <p className="mt-2 text-xl font-semibold text-brand-600">
             {locale === 'es' ? 'Lectura y Matemáticas' : 'Reading and Math'}
           </p>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg font-medium text-gray-600">
             {locale === 'es'
-              ? 'Conozca nuestro programa mientras responde estas preguntas. Al seleccionar una respuesta, le mostraremos información que puede ayudarle a decidir sinuestras tutorías son adecuadas para su hijo(a).'
-              : 'Learn about our program as you answer these questions. Each selection provides helpful information so you can decide whether our tutoring services are right for your child.'}
-          </p>
+                ? '¡Descubra si nuestro programa de tutorías es adecuado para su hijo(a)!'
+                : 'Find out if our tutoring program is right for you!'}
+            </p>
         </header>
 
         <div className="mb-6">
