@@ -1,7 +1,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock3, Info } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock3 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 type Locale = 'es' | 'en';
@@ -585,7 +585,7 @@ export default function OneOnOneTutoringPage() {
                       role="status"
                       className="mt-3 flex gap-3 rounded-xl bg-blue-50 p-4 text-smtext-brand-800"
                     >
-                      <Info className="mt-0.5 h-5 w-5 shrink-0" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
                       <p>{tr(option.feedback)}</p>
                     </div>
                   ))}
@@ -789,4 +789,3 @@ export default function OneOnOneTutoringPage() {
     </div>
   );
 }
-
