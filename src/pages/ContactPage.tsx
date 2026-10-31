@@ -513,7 +513,11 @@ export default function ContactPage() {
 
                 {item.contact && (
                   <p
-                    className={`font-bold text-base break-all w-full ${
+                    className={`font-bold w-full ${
+                      item.contact === CONTACT_EMAIL
+                        ? 'whitespace-nowrap tracking-tight text-[clamp(9px,1.05vw,16px)]'
+                        : 'text-base break-all'
+                    } ${
                       item.accent
                         ? 'text-white'
                         : 'text-accent-600'
