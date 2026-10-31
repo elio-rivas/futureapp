@@ -1,5 +1,6 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { parentEmailHtml, staffEmailHtml } from './email-template.ts';
 
 const SOURCE = 'one_on_one_tutoring';
 const STAFF_EMAIL = 'futurefoundations.edu@gmail.com';
@@ -35,11 +36,6 @@ function string(value: unknown, max: number): string | null {
   if (typeof value !== 'string') return null;
   const v = value.trim();
   return v.length <= max ? v : null;
-}
-function html(value: string): string {
-  return value.replace(/[&<>"']/g, (char) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[char] ?? char));
 }
 function canonicalJson(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
@@ -120,6 +116,18 @@ function normalizeSourceUrl(value: unknown): string {
     return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.toString() : '';
   } catch { return ''; }
 }
+const ANSWER_LABELS: Record<string, Record<string, [string, string]>> = {
+  grade: { kindergarten:['Kindergarten','Kindergarten'], grade_1:['Primer grado','First grade'], grade_2:['Segundo grado','Second grade'], grade_3:['Tercer grado','Third grade'], grade_4:['Cuarto grado','Fourth grade'], grade_5:['Quinto grado','Fifth grade'], other:['Otro','Other'] },
+  subjects: { reading:['Lectura','Reading'], math:['Matemáticas','Math'] },
+  primary_need: { foundational:['Habilidades fundamentales','Foundational skills'], difficulties:['Dificultades académicas','Academic difficulties'], reinforcement:['Refuerzo académico','Academic reinforcement'], guidance:['Orientación','Guidance'] },
+  in_person: { yes:['Sí','Yes'], no:['No','No'] },
+  five_weeks: { yes:['Sí','Yes'], no:['No','No'] },
+  session_format: { yes:['Sí','Yes'], no:['No','No'] },
+  payment: { step_up_available:['Step Up — fondos disponibles','Step Up — funds available'], step_up_pending:['Step Up — pendiente','Step Up — pending'], other_payment:['Otro método de pago','Other payment method'] },
+};
+function displayAnswer(key: string, values: string[], language: Language): string {
+  return values.map(value => ANSWER_LABELS[key]?.[value]?.[language === 'es' ? 0 : 1] ?? value).join(', ') || (language === 'es' ? 'No especificado' : 'Not specified');
+}
 function stablePayload(lead: Data, channel: Channel): { to: string[]; subject: string; text: string; html: string; from: string; reply_to: string } {
   const language: Language = lead.language === 'es' ? 'es' : 'en';
   const a = lead.tutoring_answers as Answers;
@@ -169,7 +177,31 @@ function stablePayload(lead: Data, channel: Channel): { to: string[]; subject: s
       ? 'Recibimos su solicitud de tutorías | Future Foundations Education'
       : 'We Received Your Tutoring Inquiry | Future Foundations Education',
     text,
-    html: `<div style="font-family:Arial,sans-serif;color:#183153;max-width:640px;margin:auto"><h2>Future Foundations Education</h2><div style="white-space:pre-wrap">${html(text)}</div></div>`,
+    html: staff ? staffEmailHtml(parent, [
+      { title: 'Parent / Guardian', fields: [
+        { label: 'Name', value: parent }, { label: 'Email', value: String(lead.email) },
+        { label: 'Phone', value: String(lead.phone) }, { label: 'Language', value: language },
+        { label: 'Preferred callback', value: callback },
+      ] },
+      { title: 'Student / Tutoring', fields: [
+        { label: 'Grade', value: displayAnswer('grade', a.grade, language) },
+        { label: 'Subjects', value: displayAnswer('subjects', a.subjects, language) },
+        { label: 'Primary need', value: displayAnswer('primary_need', a.primary_need, language) },
+        { label: 'In-person in Kissimmee', value: displayAnswer('in_person', a.in_person, language) },
+        { label: 'Five-week availability', value: displayAnswer('five_weeks', a.five_weeks, language) },
+        { label: '60-minute one-on-one format', value: displayAnswer('session_format', a.session_format, language) },
+        { label: 'Payment preference', value: displayAnswer('payment', a.payment, language) },
+      ] },
+      { title: 'Administrative details', fields: [
+        { label: 'Submission ID', value: String(lead.id) },
+        { label: 'Preliminary qualification', value: String(lead.tutoring_qualification) },
+        { label: 'Payment status', value: String(lead.tutoring_payment_status) },
+        { label: 'Consent', value: lead.contact_consent_granted === true ? 'Yes' : 'No' },
+        { label: 'Consent time', value: String(lead.contact_consent_at) },
+        { label: 'Consent version', value: String(lead.contact_consent_version) },
+        { label: 'Source URL', value: String(lead.tutoring_source_url || 'Not specified') },
+      ] },
+    ], String(lead.email)) : parentEmailHtml(parent, language),
   };
 }
 
