@@ -31,14 +31,16 @@ const targetedReadingEN = {
     {
       "title": "One-on-One Tutoring",
       "tagline": "One child. One tutor.",
-      "schedule": "Private 30-minute sessions, twice weekly.",
-      "description": "Your child receives individual attention and focused instruction at their own pace. Sessions are designed around their learning needs and academic goals."
+      "schedule": "Private personalized tutoring sessions, twice weekly.",
+      "description": "Your child receives individual attention and focused instruction at their own pace. Sessions are designed around their learning needs and academic goals.",
+      "durationNote": "Sessions last 30 to 60 minutes"
     },
     {
       "title": "Learning Pair",
       "tagline": "Two students. One tutor.",
-      "schedule": "55-minute sessions, twice weekly.",
-      "description": "Students are matched by skill level while working toward their own learning goals. Each child receives personal attention in a supportive, small-group learning environment."
+      "schedule": "Learning pair tutoring sessions, twice weekly.",
+      "description": "Students are matched by skill level while working toward their own learning goals. Each child receives personal attention in a supportive, small-group learning environment.",
+      "durationNote": "Sessions last up to 60 minutes, twice a week"
     }
   ],
   "highlightsTitle": "What your child can expect",
@@ -90,14 +92,16 @@ const targetedReadingES = {
     {
       "title": "Tutoría individual",
       "tagline": "Un niño. Un tutor.",
-      "schedule": "Sesiones privadas de 30 minutos, dos veces por semana.",
-      "description": "Tu hijo recibe atención individual y enseñanza enfocada a su propio ritmo. Las sesiones se adaptan a sus necesidades de aprendizaje y metas académicas."
+      "schedule": "Sesiones privadas de tutoría personalizada, dos veces por semana.",
+      "description": "Tu hijo recibe atención individual y enseñanza enfocada a su propio ritmo. Las sesiones se adaptan a sus necesidades de aprendizaje y metas académicas.",
+      "durationNote": "Las sesiones duran de 30 a 60 minutos"
     },
     {
       "title": "Aprendizaje en pareja",
       "tagline": "Dos estudiantes. Un tutor.",
-      "schedule": "Sesiones de 55 minutos, dos veces por semana.",
-      "description": "Los estudiantes se agrupan según su nivel de habilidades y trabajan para alcanzar sus propias metas de aprendizaje. Cada niño recibe atención personalizada en un ambiente de aprendizaje colaborativo."
+      "schedule": "Sesiones de tutoría en pareja de aprendizaje, dos veces por semana.",
+      "description": "Los estudiantes se agrupan según su nivel de habilidades y trabajan para alcanzar sus propias metas de aprendizaje. Cada niño recibe atención personalizada en un ambiente de aprendizaje colaborativo.",
+      "durationNote": "Las sesiones duran hasta 60 minutos, dos veces por semana"
     }
   ],
   "highlightsTitle": "Qué puede esperar tu hijo",

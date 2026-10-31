@@ -149,6 +149,7 @@ export default function ProgramsPage() {
                             <p className="font-semibold text-brand-800 mb-2">{option.tagline}</p>
                             <p className="font-medium text-brand-700 text-sm mb-3">{option.schedule}</p>
                             <p className="text-brand-600 text-sm leading-relaxed">{option.description}</p>
+                            {'durationNote' in option && <p className="mt-3 text-sm font-medium text-brand-700">{option.durationNote}</p>}
                           </div>
                         ))}
                       </div>
