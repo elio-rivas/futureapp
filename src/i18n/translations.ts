@@ -763,7 +763,7 @@ export const translations = {
     },
     servicesCarousel: {
       sectionLabel: 'What We Offer',
-      titleLine1: 'Programs Designed',
+      titleLine1: 'Tutoring Programs Designed',
       titleLine2: 'For Your Child',
       viewProgram: 'View Program',
       items: [
@@ -1816,7 +1816,7 @@ export const translations = {
     },
     servicesCarousel: {
       sectionLabel: 'Lo Que Ofrecemos',
-      titleLine1: 'Programas Diseñados',
+      titleLine1: 'Programas de Tutoría Diseñados',
       titleLine2: 'Para Tu Hijo',
       viewProgram: 'Ver Programa',
       items: [
